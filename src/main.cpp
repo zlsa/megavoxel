@@ -16,9 +16,12 @@ int main(int argc, char *argv[]) {
     run(argc, argv);
     
     return(EXIT_SUCCESS);
+    
   } catch(exit_exception e) {
     return(EXIT_SUCCESS);
+    
   } catch(fatal_exception e) {
     return(EXIT_FAILURE);
   }
+  
 }

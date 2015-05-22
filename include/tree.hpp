@@ -5,18 +5,21 @@
 #include <string>
 #include <vector>
 
+namespace tree {
+
 #define TREE_ITEM_TYPE_VALUE     (0)
 #define TREE_ITEM_TYPE_CONTAINER (1)
 #define TREE_ITEM_TYPE_POINTER   (2)
 
 class TreeValue {
  public:
-  
+
 };
 
 class TreeItem {
- public:
+ protected:
   TreeItem *parent;
+  TreeItem *root;
   
   std::string name;
 
@@ -30,8 +33,25 @@ class TreeItem {
   std::vector<TreeItem> children;  // TREE_ITEM_CONTAINER
   
   std::vector<TreeItem> pointed;     // TREE_ITEM_POINTER
-  
+
+ public:
   TreeItem(std::string name);
+  TreeItem find(std::string path);
 };
+
+class TreePath {
+ protected:
+  std::vector<std::string> path;
+  
+ public:
+  TreePath(std::string string);
+  void normalize(TreeItem relative);
+};
+
+// utility functions
+
+std::vector<std::string> stringToVector(std::string string);
+  
+}
 
 #endif

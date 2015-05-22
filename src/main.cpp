@@ -3,11 +3,20 @@
 #include <stdlib.h>
 
 #include "pflight_config.hpp"
+#include "program.hpp"
+#include "tree.hpp"
 #include "util.hpp"
 #include "log.hpp"
 
+Program *program;
+
 int run(int argc, char *argv[]) {
-  log(LOG_LEVEL_INFO, "pFlight version " + (std::string) PFLIGHT_VERSION);
+
+  program = new Program(argc, argv);
+
+  program->parseArgs();
+
+  program->displayVersion();
 }
 
 int main(int argc, char *argv[]) {

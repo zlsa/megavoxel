@@ -1,6 +1,53 @@
 
 #include "tree.hpp"
 
+namespace tree {
+
+////////////////////////////////////////////////////////////////////////////////
+// TreeItem
+////////////////////////////////////////////////////////////////////////////////
+
 TreeItem::TreeItem(std::string name) {
   this->name = name;
+}
+
+TreeItem TreeItem::find(std::string path) {
+  this->name = name;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TreePath
+////////////////////////////////////////////////////////////////////////////////
+
+TreePath::TreePath(std::string string) {
+  this->path = stringToVector(string);
+}
+
+void TreePath::normalize(TreeItem relative) {
+  for(int i=0; i<this->path.size(); i++) {
+
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// utility functions
+////////////////////////////////////////////////////////////////////////////////
+
+std::vector<std::string> stringToVector(std::string path) {
+  std::vector<std::string> vector;
+
+  std::string current_name("");
+
+  for(char & c : path) {
+    if(c == '/') {
+      vector.push_back(current_name);
+      current_name.clear();
+    } else {
+      current_name += c;
+    }
+  }
+
+  return vector;
+}
+
 }

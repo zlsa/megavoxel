@@ -7,15 +7,12 @@
 #define NEWLINE "\n"
 
 class exit_exception: public std::exception {
-  virtual const char* what() const throw() {
-    return "Exiting normally.";
-  }
 };
 
 class fatal_exception: public std::exception {
-  virtual const char* what() const throw() {
-    return "Exiting very non-normally.";
-  }
 };
+
+float clamp(float n, float lower, float upper);
+int clamp(int n, int lower, int upper);
 
 #endif

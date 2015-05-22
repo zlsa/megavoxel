@@ -2,16 +2,20 @@
 #ifndef LOG_H
 #define LOG_H
 
-#define LOG_LEVEL_VOMIT  (0)
-#define LOG_LEVEL_DEBUG  (1)
-#define LOG_LEVEL_INFO   (2)
-#define LOG_LEVEL_NOTICE (3)
-#define LOG_LEVEL_WARN   (4)
-#define LOG_LEVEL_ERROR  (5)
-#define LOG_LEVEL_FATAL  (6)
+enum LogLevel {
+  LOG_LEVEL_VOMIT = 0,
+  LOG_LEVEL_DEBUG,
+  LOG_LEVEL_INFO,
+  LOG_LEVEL_NOTICE,
+  LOG_LEVEL_WARN,
+  LOG_LEVEL_ERROR,
+  LOG_LEVEL_FATAL,
+  LOG_LEVEL_INTERNAL,
+  LOG_LEVEL_MAX
+};
 
 #define LOG_USE_COLOR (1)
 
-void log(int level, std::string message);
+void log(LogLevel level, std::string message, bool force = false);
 
 #endif

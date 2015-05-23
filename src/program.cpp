@@ -104,6 +104,9 @@ void Program::parseArg(std::string arg) {
 }
 
 void Program::parseShortArg(char arg) {
+  if(this->value_flag != ARGUMENT_FLAG_NONE) {
+    throw invalid_argument_exception(ARGUMENT_PREFIX_SHORT, std::string(1, arg));
+  }
   switch(arg) {
    case 'h':
      this->setFlag(ARGUMENT_FLAG_HELP);
@@ -130,7 +133,7 @@ void Program::parseLongArg(std::string arg) {
     this->setFlag(ARGUMENT_FLAG_VERSION);
   } else if(arg == "dump") {
     this->setFlag(ARGUMENT_FLAG_LOG_LEVEL, LOG_LEVEL_DUMP);
-  } else if(arg == "verbose") {
+  } else if(arg == "debug") {
     this->setFlag(ARGUMENT_FLAG_LOG_LEVEL, LOG_LEVEL_DEBUG);
   } else if(arg == "quiet") {
     this->setFlag(ARGUMENT_FLAG_LOG_LEVEL, LOG_LEVEL_WARN);
@@ -236,7 +239,7 @@ void Program::displayHelp(bool force) {
   log(LOG_LEVEL_INFO, "    -v                            Display more log output", force);
   log(LOG_LEVEL_INFO, "        --silent                  Log only during fatal errors", force);
   log(LOG_LEVEL_INFO, "        --quiet                   Log only warnings and up", force);
-  log(LOG_LEVEL_INFO, "        --verbose                 Log only debug messages and up", force);
+  log(LOG_LEVEL_INFO, "        --debug                   Log only debug messages and up", force);
   log(LOG_LEVEL_INFO, "        --dump                    Log EVERYTHING", force);
   log(LOG_LEVEL_INFO, "", force);
   log(LOG_LEVEL_INFO, "Config options:", force);

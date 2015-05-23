@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <boost/filesystem.hpp>
-#include <unordered_map>
+#include <fstream>
 
 #include "pflight_config.hpp"
 
@@ -14,6 +14,23 @@
 #else
 #define CONFIG_SYSTEM_PATH SYSTEM_PREFIX "config"
 #endif
+
+#define CONFIG_FILE_INFO(file, line) " on line " + std::to_string(line + 1) + " of '" + file + "'"
+
+#define CONFIG_TYPE(t) (t == CONFIG_TYPE_BOOL ? "bool" : \
+                        (t == CONFIG_TYPE_INT ? "int" : \
+                         (t == CONFIG_TYPE_DOUBLE ? "double" : \
+                          (t == CONFIG_TYPE_STRING ? "string" : \
+                           (t == CONFIG_TYPE_PATH ? "path" : "none")))))
+
+enum ConfigLineState {
+  CONFIG_STATE_WAIT_TYPE,
+  CONFIG_STATE_WAIT_KEY,
+  CONFIG_STATE_WAIT_EQUALS,
+  CONFIG_STATE_WAIT_VALUE,
+  CONFIG_STATE_WAIT_SEMICOLON,
+  CONFIG_STATE_WAIT_NEWLINE
+};
 
 enum ConfigSource {
   CONFIG_SOURCE_NONE = 0,
@@ -25,6 +42,7 @@ enum ConfigSource {
 
 enum ConfigType {
   CONFIG_TYPE_NONE = 0,
+  CONFIG_TYPE_BOOL,
   CONFIG_TYPE_INT,
   CONFIG_TYPE_DOUBLE,
   CONFIG_TYPE_STRING,
@@ -36,6 +54,7 @@ class ConfigValue {
  protected:
   ConfigType type;
 
+  int bool_value;
   int int_value;
   double double_value;
   std::string string_value;
@@ -43,6 +62,15 @@ class ConfigValue {
   
  public:
   ConfigValue();
+  void setType(ConfigType type);
+  void setValue(bool value);
+  void setValue(int value);
+  void setValue(double value);
+  void setValue(std::string value);
+  void setValue(boost::filesystem::path value);
+  void setValueAuto(std::string value);
+
+  ConfigType getType();
 };
 
 class ConfigItem {
@@ -55,15 +83,48 @@ class ConfigItem {
   
  public:
   ConfigItem();
+  void setType(ConfigType type);
+  void setKey(std::string key);
+  void setValue(bool value);
+  void setValue(int value);
+  void setValue(double value);
+  void setValue(std::string value);
+  void setValue(boost::filesystem::path value);
+  void setValueAuto(std::string value);
+
+  // debugging
+  void dump();
 };
 
 class Config {
  protected:
-  std::unordered_map<std::string, ConfigItem> keys;
+  std::vector<ConfigItem*> items;
 
  public:
+  ~Config();
+  ConfigItem *readConfigLine(std::string line, std::string filename, int line_number);
+  int readConfigFile(std::ifstream *file, std::string filename);
+  
+  void addItem(ConfigItem *item);
+  
   void parseConfigFile(boost::filesystem::path path);
   void parseSystemConfig();
+
+  // debugging
+  void dump();
+};
+
+ConfigType convertStringToType(std::string type);
+bool isValidKey(std::string key);
+
+class invalid_value_exception: public std::exception {
+
+ public:
+  ConfigType type;
+  std::string value;
+  invalid_value_exception(ConfigType t, std::string val) : type(t), value(val) {};
+  const char *what() const throw() { return value.c_str(); };
+  
 };
 
 #endif

@@ -12,6 +12,8 @@ Program::Program(int argc, char *argv[]) {
 
   this->config_use_system = true;
   this->config_use_user   = true;
+
+  this->config            = new Config();
   
   this->value_flag        = ARGUMENT_FLAG_NONE;
 
@@ -136,6 +138,13 @@ void Program::parseLongArg(std::string arg) {
     this->setFlag(ARGUMENT_FLAG_LOG_LEVEL, LOG_LEVEL_FATAL);
   } else if(arg == "no-colors") {
     this->setFlag(ARGUMENT_FLAG_LOG_COLOR, false);
+  } else if(arg == "no-default-config") {
+    this->setFlag(ARGUMENT_FLAG_CONFIG_USE_SYSTEM, false);
+    this->setFlag(ARGUMENT_FLAG_CONFIG_USE_USER, false);
+  } else if(arg == "no-system-config") {
+    this->setFlag(ARGUMENT_FLAG_CONFIG_USE_SYSTEM, false);
+  } else if(arg == "no-user-config") {
+    this->setFlag(ARGUMENT_FLAG_CONFIG_USE_USER, false);
   } else if(arg == "config") {
     this->value_flag = ARGUMENT_FLAG_CONFIG_EXTRA;
   } else {
@@ -166,6 +175,12 @@ void Program::setFlag(ArgumentFlag flag, bool value) {
      break;
    case ARGUMENT_FLAG_LOG_LEVEL:
      this->log_level = clamp(this->log_level + offset, 0, LOG_LEVEL_MAX - 1);
+     break;
+   case ARGUMENT_FLAG_CONFIG_USE_SYSTEM:
+     this->config_use_system = value;
+     break;
+   case ARGUMENT_FLAG_CONFIG_USE_USER:
+     this->config_use_user = value;
      break;
    default:
      log(LOG_LEVEL_INTERNAL, "got an unknown flag in setFlag(flag, bool)");
@@ -240,14 +255,33 @@ void Program::displayVersion(bool force) {
 // CONFIG
 
 void Program::parseConfig() {
-  this->config.parseSystemConfig();
+  this->config->parseSystemConfig();
+  
+  for(auto filename : this->config_extra) {
+    this->config->parseConfigFile(filename);
+  }
+  
 }
 
 // DEBUG
 
 void Program::dump() {
-  log(LOG_LEVEL_DUMP, "config_use_system         = " + std::to_string(this->config_use_system));
-  log(LOG_LEVEL_DUMP, "config_use_user           = " + std::to_string(this->config_use_user));
+  log(LOG_LEVEL_DUMP, " -- dumping Program -- ");
+  log(LOG_LEVEL_DUMP, "config_use_system         = " + bool_to_string(this->config_use_system));
+  log(LOG_LEVEL_DUMP, "config_use_user           = " + bool_to_string(this->config_use_user));
   log(LOG_LEVEL_DUMP, "config_extra              = " + vector_to_string(this->config_extra));
+
+  log(LOG_LEVEL_DUMP, "log_level                 = " + std::to_string(this->log_level));
+  log(LOG_LEVEL_DUMP, "log_use_colors            = " + bool_to_string(this->log_use_colors));
+  
+  this->config->dump();
+  
+  log(LOG_LEVEL_DUMP, " --   end Program   -- ");
 }
 
+// DESTRUCTOR
+
+Program::~Program() {
+  delete this->config;
+  log(LOG_LEVEL_DUMP, "deleting Program");
+}

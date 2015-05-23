@@ -54,7 +54,7 @@ class Program {
   ArgumentFlag value_flag;
 
   // CONFIG
-  Config config;
+  Config *config;
 
  public:
   int log_level;
@@ -84,6 +84,9 @@ class Program {
   
   // debugging
   void dump();
+
+  // destructor
+  ~Program();
 };
 
 class invalid_argument_exception: public std::exception {

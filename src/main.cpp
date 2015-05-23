@@ -15,12 +15,13 @@ int run(int argc, char *argv[]) {
   program = new Program(argc, argv);
 
   program->parseArgs();
-
-  program->displayVersion();
-  
   program->parseConfig();
   
+  program->displayVersion();
+  
   program->dump();
+
+  delete program;
 }
 
 int main(int argc, char *argv[]) {

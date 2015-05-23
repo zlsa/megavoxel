@@ -10,5 +10,6 @@ add_executable(pflight
 
 target_link_libraries(pflight "${Boost_LIBRARIES}" -lboost_system -lGL)
 target_link_libraries(pflight ${GLFW_LIBRARIES})
+target_link_libraries(pflight ${OPENSCENEGRAPH_LIBRARIES})
 
 install(TARGETS pflight DESTINATION bin)

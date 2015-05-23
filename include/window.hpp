@@ -4,6 +4,10 @@
 
 #include <string>
 #include <GLFW/glfw3.h>
+#include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
+#include <osgGA/TrackballManipulator>
+#include <osgDB/ReadFile>
 
 #define WINDOW_DEFAULT_WIDTH (1024)
 #define WINDOW_DEFAULT_HEIGHT (768)
@@ -22,6 +26,9 @@ class Window {
   bool fullscreen;
 
   bool should_close;
+
+  osg::ref_ptr<osgViewer::Viewer> viewer;
+  osg::observer_ptr<osgViewer::GraphicsWindow> graphics_window;
 
  public:
   Window();

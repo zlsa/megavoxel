@@ -12,6 +12,7 @@ set(PFLIGHT_VERSION_PATCH 0)
 
 # REQUIRED LIBRARIES
 
+find_package(OpenSceneGraph REQUIRED osgText osgSim osgDB osgParticle osgGA osgViewer osgUtil)
 find_package(PkgConfig REQUIRED)
 
 pkg_search_module(GLFW REQUIRED glfw3)
@@ -42,10 +43,9 @@ configure_file(
 include_directories("${PROJECT_SOURCE_DIR}/include/")
 include_directories("${PROJECT_BINARY_DIR}/include/")
 include_directories("${GLFW_INCLUDE_DIRS}")
+include_directories("${Boost_INCLUDE_DIRS}")
+include_directories("${OPENSCENEGRAPH_INCLUDE_DIRS}")
 
-if(Boost_FOUND)
-  include_directories("${Boost_INCLUDE_DIRS}")
-endif()
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 

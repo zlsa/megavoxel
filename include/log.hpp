@@ -3,7 +3,7 @@
 #define LOG_H
 
 enum LogLevel {
-  LOG_LEVEL_VOMIT = 0,
+  LOG_LEVEL_DUMP = 0,
   LOG_LEVEL_DEBUG,
   LOG_LEVEL_INFO,
   LOG_LEVEL_NOTICE,

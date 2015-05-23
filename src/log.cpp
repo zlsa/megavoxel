@@ -20,10 +20,10 @@ static std::string log_colors[] = {
 void log(LogLevel level, std::string message, bool force) {
   std::string prefix;
 
-  if(program != NULL && level < program->log_level && !force) return;
-  
+  if(program != NULL && level < program->log_level) return;
+
   switch(level) {
-  case LOG_LEVEL_VOMIT:
+  case LOG_LEVEL_DUMP:
     prefix = "  ";
     break;
   case LOG_LEVEL_DEBUG:
@@ -59,7 +59,7 @@ void log(LogLevel level, std::string message, bool force) {
   }
 
   if(level >= LOG_LEVEL_FATAL) {
-    throw exit_exception();
+    throw fatal_exception();
   }
   
 }

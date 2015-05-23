@@ -17,6 +17,8 @@ int run(int argc, char *argv[]) {
   program->parseArgs();
 
   program->displayVersion();
+  
+  program->dump();
 }
 
 int main(int argc, char *argv[]) {

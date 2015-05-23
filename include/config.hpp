@@ -11,8 +11,9 @@
 
 #ifdef __linux
 #define CONFIG_SYSTEM_PATH SYSTEM_PREFIX "/share/pflight/config"
+#define CONFIG_USER_DIRECTORY boost::filesystem::path(getenv("HOME")).string() + "/.config/pflight/"
+#define CONFIG_USER_PATH CONFIG_USER_DIRECTORY "config"
 #else
-#define CONFIG_SYSTEM_PATH SYSTEM_PREFIX "config"
 #endif
 
 #define CONFIG_FILE_INFO(file, line) " on line " + std::to_string(line + 1) + " of '" + file + "'"
@@ -109,6 +110,7 @@ class Config {
   
   void parseConfigFile(boost::filesystem::path path);
   void parseSystemConfig();
+  void parseUserConfig();
 
   // debugging
   void dump();

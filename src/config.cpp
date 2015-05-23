@@ -292,6 +292,25 @@ void Config::parseSystemConfig() {
   this->parseConfigFile(boost::filesystem::path(CONFIG_SYSTEM_PATH));
 }
 
+void Config::parseUserConfig() {
+  boost::filesystem::path config_user_directory(CONFIG_USER_DIRECTORY);
+  boost::filesystem::path config_user_path(CONFIG_USER_PATH);
+  
+  if(!boost::filesystem::exists(config_user_path.string())) {
+    boost::filesystem::create_directories(config_user_directory.string());
+    
+    log(LOG_LEVEL_NOTICE, "created config directory '" + config_user_directory.string() + "'");
+      
+    std::ofstream outfile(config_user_path.string());
+    outfile << "// created by pflight" << std::endl;
+    outfile.close();
+      
+    log(LOG_LEVEL_NOTICE, "created user config file '" + config_user_path.string() + "'");
+  }
+  
+  this->parseConfigFile(boost::filesystem::path(config_user_path));
+}
+
 // DEBUG
 
 void Config::dump() {

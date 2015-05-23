@@ -258,7 +258,11 @@ void Program::displayVersion(bool force) {
 // CONFIG
 
 void Program::parseConfig() {
-  this->config->parseSystemConfig();
+  if(this->config_use_system)
+    this->config->parseSystemConfig();
+  
+  if(this->config_use_user)
+    this->config->parseUserConfig();
   
   for(auto filename : this->config_extra) {
     this->config->parseConfigFile(filename);

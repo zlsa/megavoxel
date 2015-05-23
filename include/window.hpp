@@ -8,6 +8,10 @@
 #define WINDOW_DEFAULT_WIDTH (1024)
 #define WINDOW_DEFAULT_HEIGHT (768)
 
+#define WINDOW_MINIMUM_VERSION_MAJOR 3
+#define WINDOW_MINIMUM_VERSION_MINOR 2
+#define WINDOW_MINIMUM_VERSION       "3.2"
+
 class Window {
  protected:
   GLFWwindow* window;

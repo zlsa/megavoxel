@@ -24,11 +24,14 @@ std::string Window::getStringSize() {
 }
 
 void Window::create() {
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, WINDOW_MINIMUM_VERSION_MAJOR);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, WINDOW_MINIMUM_VERSION_MINOR);
+  
   this->window = glfwCreateWindow(this->width, this->height, this->title.c_str(), NULL, NULL);
   
   if(this->window == NULL) {
     glfwTerminate();
-    log(LOG_LEVEL_FATAL, "could not create window");
+    log(LOG_LEVEL_FATAL, "could not create window (you need OpenGL version > " WINDOW_MINIMUM_VERSION ")");
   }
   
   glfwMakeContextCurrent(this->window);
@@ -36,6 +39,7 @@ void Window::create() {
   log(LOG_LEVEL_DUMP, "created " + this->getStringSize() + " window with title '" + this->title + "'");
   
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f );
+
 }
 
 void Window::tick() {

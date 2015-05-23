@@ -1,6 +1,4 @@
 // System config file
 
-bool   bool_test   = false;
-int    int_test    = 42;
-double double_test = 30.0;
-string string_test = "Hello, world!";
+int window_width  = 1280;
+int window_height = 512;

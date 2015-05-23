@@ -1,3 +1,0 @@
-[submodule "extern/oglplus"]
-	path = extern/oglplus
-	url = https://github.com/matus-chochlik/oglplus.git

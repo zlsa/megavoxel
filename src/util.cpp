@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cctype>
 
-float clamp(float n, float lower, float upper) {
+double clamp(double n, double lower, double upper) {
   return(std::max(lower, std::min(n, upper)));
 }
 

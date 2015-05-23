@@ -9,38 +9,42 @@
 #include "log.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
-// CONFIGVALUE
+// CONFIGITEM
 ////////////////////////////////////////////////////////////////////////////////
 
-ConfigValue::ConfigValue() {
+ConfigItem::ConfigItem() {
   
 }
 
-void ConfigValue::setType(ConfigType type) {
+void ConfigItem::setType(ConfigType type) {
   this->type = type;
 }
 
-void ConfigValue::setValue(bool value) {
+void ConfigItem::setKey(std::string key) {
+  this->key = key;
+}
+
+void ConfigItem::setValue(bool value) {
   this->bool_value = value;
 }
 
-void ConfigValue::setValue(int value) {
+void ConfigItem::setValue(int value) {
   this->int_value = value;
 }
 
-void ConfigValue::setValue(double value) {
+void ConfigItem::setValue(double value) {
   this->double_value = value;
 }
 
-void ConfigValue::setValue(std::string value) {
+void ConfigItem::setValue(std::string value) {
   this->string_value = value;
 }
 
-void ConfigValue::setValue(boost::filesystem::path value) {
+void ConfigItem::setValue(boost::filesystem::path value) {
   this->path_value.push_back(value);
 }
 
-void ConfigValue::setValueAuto(std::string value) {
+void ConfigItem::setValueAuto(std::string value) {
   switch(this->type) {
    case CONFIG_TYPE_BOOL:
      if(value == "true" || value == "1" || value == "on") {
@@ -76,52 +80,63 @@ void ConfigValue::setValueAuto(std::string value) {
   }
 }
 
-ConfigType ConfigValue::getType() {
+std::string ConfigItem::getKey() {
+  return(this->key);
+}
+
+ConfigType ConfigItem::getType() {
   return(this->type);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// CONFIGITEM
-////////////////////////////////////////////////////////////////////////////////
-
-ConfigItem::ConfigItem() {
-  
+bool ConfigItem::getBoolValue() {
+  if(this->type == CONFIG_TYPE_BOOL)
+    return(this->bool_value);
+  throw invalid_value_exception(CONFIG_TYPE_BOOL, CONFIG_TYPE(this->type));
 }
 
-void ConfigItem::setType(ConfigType type) {
-  this->value.setType(type);
+int ConfigItem::getIntValue() {
+  if(this->type == CONFIG_TYPE_INT)
+    return(this->int_value);
+  throw invalid_value_exception(CONFIG_TYPE_INT, CONFIG_TYPE(this->type));
 }
 
-void ConfigItem::setKey(std::string key) {
-  this->key = key;
+double ConfigItem::getDoubleValue() {
+  if(this->type == CONFIG_TYPE_DOUBLE)
+    return(this->double_value);
+  throw invalid_value_exception(CONFIG_TYPE_DOUBLE, CONFIG_TYPE(this->type));
 }
 
-void ConfigItem::setValue(bool value) {
-  this->value.setValue(value);
+std::string ConfigItem::getStringValue() {
+  if(this->type == CONFIG_TYPE_STRING)
+    return(this->string_value);
+  throw invalid_value_exception(CONFIG_TYPE_STRING, CONFIG_TYPE(this->type));
 }
 
-void ConfigItem::setValue(int value) {
-  this->value.setValue(value);
+std::vector<boost::filesystem::path> ConfigItem::getPathValue() {
+  if(this->type == CONFIG_TYPE_PATH)
+    return(this->path_value);
+  throw invalid_value_exception(CONFIG_TYPE_PATH, CONFIG_TYPE(this->type));
 }
 
-void ConfigItem::setValue(double value) {
-  this->value.setValue(value);
-}
-
-void ConfigItem::setValue(std::string value) {
-  this->value.setValue(value);
-}
-
-void ConfigItem::setValue(boost::filesystem::path value) {
-  this->value.setValue(value);
-}
-
-void ConfigItem::setValueAuto(std::string value) {
-  this->value.setValueAuto(value);
+std::string ConfigItem::getAutoValue() {
+  switch(this->type) {
+   case CONFIG_TYPE_BOOL:
+     return(bool_to_string(this->bool_value));
+   case CONFIG_TYPE_INT:
+     return(std::to_string(this->int_value));
+   case CONFIG_TYPE_DOUBLE:
+     return(std::to_string(this->double_value));
+   case CONFIG_TYPE_STRING:
+     return('"' + this->string_value + '"');
+   case CONFIG_TYPE_PATH:
+     return(vector_to_string(this->path_value));
+   default:
+     return("");
+  }
 }
 
 void ConfigItem::dump() {
-  log(LOG_LEVEL_DUMP, CONFIG_TYPE(this->value.getType()) + std::string(" ") + this->key + ";");
+  log(LOG_LEVEL_DUMP, CONFIG_TYPE(this->getType()) + std::string(" ") + this->key + " = " + this->getAutoValue() + ";");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +201,6 @@ ConfigItem *Config::readConfigLine(std::string line, std::string filename, int l
          case CONFIG_STATE_WAIT_SEMICOLON:
            if(buffer != ";") {
              log(LOG_LEVEL_WARN, "expected terminating semicolon" CONFIG_FILE_INFO(filename, line_number));
-             log(LOG_LEVEL_DUMP, buffer);
              return(NULL);
            }
            state = CONFIG_STATE_WAIT_NEWLINE;
@@ -242,6 +256,38 @@ ConfigItem *Config::readConfigLine(std::string line, std::string filename, int l
 void Config::addItem(ConfigItem *item) {
   if(item != NULL)
     this->items.push_back(item);
+}
+
+ConfigItem *Config::getItem(std::string key) {
+  for(int i=this->items.size()-1; i>=0; i--) {
+    if(this->items[i]->getKey() == key) return this->items[i];
+  }
+  return(NULL);
+}
+
+bool Config::getBoolValue(std::string key, bool def) {
+  ConfigItem *item = this->getItem(key);
+  return(item ? item->getBoolValue() : def);
+}
+
+int Config::getIntValue(std::string key, int def) {
+  ConfigItem *item = this->getItem(key);
+  return(item ? item->getIntValue() : def);
+}
+
+double Config::getDoubleValue(std::string key, double def) {
+  ConfigItem *item = this->getItem(key);
+  return(item ? item->getDoubleValue() : def);
+}
+
+std::string Config::getStringValue(std::string key, std::string def) {
+  ConfigItem *item = this->getItem(key);
+  return(item ? item->getStringValue() : def);
+}
+
+std::vector<boost::filesystem::path> Config::getPathValue(std::string key) {
+  ConfigItem *item = this->getItem(key);
+  return(item ? item->getPathValue() : std::vector<boost::filesystem::path>());
 }
 
 int Config::readConfigFile(std::ifstream *file, std::string filename) {
@@ -345,7 +391,7 @@ bool isValidKey(std::string key) {
     return(false);
   }
   int i=0;
-  for (std::string::iterator it=key.begin(); it!=key.end(); ++it) {
+  for(std::string::iterator it=key.begin(); it!=key.end(); ++it) {
     if((!isalpha(*it, locale) || (i == 0 && isdigit(*it))) && (*it != '_')) {
       return(false);
     }

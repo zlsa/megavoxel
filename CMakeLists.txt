@@ -12,8 +12,9 @@ set(PFLIGHT_VERSION_PATCH 0)
 
 # REQUIRED LIBRARIES
 
-# OSG
-find_package(OpenSceneGraph)
+find_package(PkgConfig REQUIRED)
+
+pkg_search_module(GLFW REQUIRED glfw3)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
@@ -27,7 +28,7 @@ find_package(Boost 1.40
 
 # and here we go
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
@@ -40,10 +41,12 @@ configure_file(
 
 include_directories("${PROJECT_SOURCE_DIR}/include/")
 include_directories("${PROJECT_BINARY_DIR}/include/")
+include_directories("${GLFW_INCLUDE_DIRS}")
 
 if(Boost_FOUND)
   include_directories("${Boost_INCLUDE_DIRS}")
-  add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 endif()
+
+add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 
 install(FILES data/system_config DESTINATION share/pflight RENAME config)

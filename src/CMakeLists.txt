@@ -4,9 +4,11 @@ add_executable(pflight
   util.cpp
   tree.cpp
   config.cpp
+  window.cpp
   program.cpp
   main.cpp)
 
-target_link_libraries(pflight "${Boost_LIBRARIES}" -lboost_system)
+target_link_libraries(pflight "${Boost_LIBRARIES}" -lboost_system -lGL)
+target_link_libraries(pflight ${GLFW_LIBRARIES})
 
 install(TARGETS pflight DESTINATION bin)

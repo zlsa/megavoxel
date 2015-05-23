@@ -2,6 +2,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <float.h>
+#include <climits>
 #include <vector>
 #include <exception>
 #include <string>
@@ -17,8 +19,8 @@ class exit_exception: public std::exception {
 class fatal_exception: public std::exception {
 };
 
-float clamp(float n, float lower, float upper);
-int clamp(int n, int lower, int upper);
+double clamp(double n, double lower, double upper=DBL_MAX);
+int clamp(int n, int lower, int upper=INT_MAX);
 
 std::string bool_to_string(bool value);
 

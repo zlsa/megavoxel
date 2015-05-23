@@ -19,7 +19,13 @@ int run(int argc, char *argv[]) {
   
   program->displayVersion();
   
+  program->createWindow();
+  
   program->dump();
+
+  while(!program->shouldExit()) {
+    program->tick();
+  }
 
   delete program;
 }
@@ -32,9 +38,11 @@ int main(int argc, char *argv[]) {
     return(EXIT_SUCCESS);
     
   } catch(exit_exception e) {
+    if(program) delete program;
     return(EXIT_SUCCESS);
     
   } catch(fatal_exception e) {
+    if(program) delete program;
     return(EXIT_FAILURE);
   }
   

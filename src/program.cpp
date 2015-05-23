@@ -17,8 +17,10 @@ Program::Program(int argc, char *argv[]) {
   
   this->value_flag        = ARGUMENT_FLAG_NONE;
 
-  this->log_level      = LOG_LEVEL_INFO;
-  this->log_use_colors = true;
+  this->log_level         = LOG_LEVEL_INFO;
+  this->log_use_colors    = true;
+
+  this->should_exit       = false;
 }
 
 void Program::parseArgs() {
@@ -270,6 +272,32 @@ void Program::parseConfig() {
   
 }
 
+// WINDOW
+
+void Program::createWindow() {
+
+  if(!glfwInit())
+    log(LOG_LEVEL_FATAL, "could not initialize GLFW");
+  
+  this->window = new Window();
+  
+  int width = -1, height = -1;
+  width  = this->config->getIntValue("window_width",  WINDOW_DEFAULT_WIDTH);
+  height = this->config->getIntValue("window_height", WINDOW_DEFAULT_HEIGHT);
+  
+  this->window->setSize(width, height);
+  this->window->create();
+}
+
+void Program::tick() {
+  this->window->tick();
+  this->should_exit = this->window->shouldClose();
+}
+
+bool Program::shouldExit() {
+  return(this->should_exit);
+}
+
 // DEBUG
 
 void Program::dump() {
@@ -289,6 +317,8 @@ void Program::dump() {
 // DESTRUCTOR
 
 Program::~Program() {
+  glfwTerminate();
+  delete this->window;
   delete this->config;
   log(LOG_LEVEL_DUMP, "deleting Program");
 }

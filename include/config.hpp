@@ -50,35 +50,18 @@ enum ConfigType {
   CONFIG_TYPE_PATH
 };
 
-class ConfigValue {
+class ConfigItem {
   
  protected:
-  ConfigType type;
+  std::string key;
 
+  ConfigType type;
+  
   int bool_value;
   int int_value;
   double double_value;
   std::string string_value;
   std::vector<boost::filesystem::path> path_value;
-  
- public:
-  ConfigValue();
-  void setType(ConfigType type);
-  void setValue(bool value);
-  void setValue(int value);
-  void setValue(double value);
-  void setValue(std::string value);
-  void setValue(boost::filesystem::path value);
-  void setValueAuto(std::string value);
-
-  ConfigType getType();
-};
-
-class ConfigItem {
-  
- protected:
-  std::string key;
-  ConfigValue value;
   
   ConfigSource source;
   
@@ -93,6 +76,15 @@ class ConfigItem {
   void setValue(boost::filesystem::path value);
   void setValueAuto(std::string value);
 
+  std::string getKey();
+  ConfigType getType();
+  bool getBoolValue();
+  int getIntValue();
+  double getDoubleValue();
+  std::string getStringValue();
+  std::vector<boost::filesystem::path> getPathValue();
+  std::string getAutoValue();
+  
   // debugging
   void dump();
 };
@@ -107,6 +99,13 @@ class Config {
   int readConfigFile(std::ifstream *file, std::string filename);
   
   void addItem(ConfigItem *item);
+  ConfigItem *getItem(std::string key);
+  
+  bool getBoolValue(std::string key, bool def=false);
+  int getIntValue(std::string key, int def=0);
+  double getDoubleValue(std::string key, double def=0.0);
+  std::string getStringValue(std::string key, std::string def="");
+  std::vector<boost::filesystem::path> getPathValue(std::string key);
   
   void parseConfigFile(boost::filesystem::path path);
   void parseSystemConfig();

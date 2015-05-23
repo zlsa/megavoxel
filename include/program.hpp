@@ -7,6 +7,7 @@
 #include <boost/filesystem.hpp>
 
 #include "config.hpp"
+#include "window.hpp"
 
 enum ArgumentParseMode {
   ARGUMENT_PARSE_MODE_ARGS,             // default mode (--help file.xml)
@@ -55,6 +56,11 @@ class Program {
 
   // CONFIG
   Config *config;
+  
+  // WINDOW
+  Window *window;
+  
+  bool should_exit;
 
  public:
   int log_level;
@@ -81,6 +87,11 @@ class Program {
 
   // config
   void parseConfig();
+
+  // window
+  void createWindow();
+  void tick();
+  bool shouldExit();
   
   // debugging
   void dump();

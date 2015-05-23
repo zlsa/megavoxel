@@ -18,6 +18,8 @@ int run(int argc, char *argv[]) {
 
   program->displayVersion();
   
+  program->parseConfig();
+  
   program->dump();
 }
 

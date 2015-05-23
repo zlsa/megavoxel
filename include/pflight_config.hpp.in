@@ -8,4 +8,6 @@
 
 #define PFLIGHT_VERSION "${PFLIGHT_VERSION}"
 
+#define SYSTEM_PREFIX "${CMAKE_INSTALL_PREFIX}"
+
 #endif

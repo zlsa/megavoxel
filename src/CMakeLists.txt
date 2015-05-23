@@ -4,7 +4,6 @@ add_executable(pflight
   util.cpp
   tree.cpp
   config.cpp
-  path.cpp
   program.cpp
   main.cpp)
 

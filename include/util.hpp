@@ -5,6 +5,7 @@
 #include <vector>
 #include <exception>
 #include <string>
+#include <boost/filesystem.hpp>
 
 #define NEWLINE "\n"
 
@@ -18,5 +19,6 @@ float clamp(float n, float lower, float upper);
 int clamp(int n, int lower, int upper);
 
 std::string vector_to_string(std::vector<std::string> vector);
+std::string vector_to_string(std::vector<boost::filesystem::path> vector);
 
 #endif

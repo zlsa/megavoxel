@@ -59,14 +59,14 @@ void Program::parseArgs() {
     
   } else if(invalid) {
     if(invalid_prefix == ARGUMENT_PREFIX_SHORT) {
-      log(LOG_LEVEL_ERROR, "invalid short argument '" + invalid_argument + "'");
+      log(LOG_LEVEL_FATAL, "invalid short argument '" + invalid_argument + "'");
     } else if(invalid_prefix == ARGUMENT_PREFIX_LONG) {
-      log(LOG_LEVEL_ERROR, "invalid long argument '" + invalid_argument + "'");
+      log(LOG_LEVEL_FATAL, "invalid long argument '" + invalid_argument + "'");
     } else if(invalid_prefix == ARGUMENT_PREFIX_VALUE) {
-      log(LOG_LEVEL_ERROR, "expected a value after '" + invalid_argument + "'");
+      log(LOG_LEVEL_FATAL, "expected a value after '" + invalid_argument + "'");
+    } else {
+      log(LOG_LEVEL_FATAL, "did not expect value '" + invalid_argument + "'");
     }
-
-    throw fatal_exception();
   }
 
   log(LOG_LEVEL_DUMP, "log level: " + std::to_string(this->log_level));
@@ -95,6 +95,8 @@ void Program::parseArg(std::string arg) {
     }
   } else {
     log(LOG_LEVEL_DUMP, "argument: " + argument);
+    log(LOG_LEVEL_DUMP, "argument: " + argument);
+    throw invalid_argument_exception(prefix, argument);
   }
 
 }
@@ -190,7 +192,7 @@ void Program::setFlag(ArgumentFlag flag, std::string value) {
   switch(flag) {
    case ARGUMENT_FLAG_CONFIG_EXTRA:
      log(LOG_LEVEL_DEBUG, "added config file '" + value + "'");
-     this->config_extra.push_back(value);
+     this->config_extra.push_back(boost::filesystem::path(value));
      break;
    default:
      log(LOG_LEVEL_INTERNAL, "got an unknown flag in setFlag(flag, std::string)");
@@ -235,8 +237,17 @@ void Program::displayVersion(bool force) {
   log(LOG_LEVEL_INFO, "pFlight version " + std::string(PFLIGHT_VERSION), force);
 }
 
+// CONFIG
+
+void Program::parseConfig() {
+  this->config.parseSystemConfig();
+}
+
+// DEBUG
+
 void Program::dump() {
   log(LOG_LEVEL_DUMP, "config_use_system         = " + std::to_string(this->config_use_system));
   log(LOG_LEVEL_DUMP, "config_use_user           = " + std::to_string(this->config_use_user));
   log(LOG_LEVEL_DUMP, "config_extra              = " + vector_to_string(this->config_extra));
 }
+

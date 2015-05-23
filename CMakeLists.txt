@@ -45,3 +45,5 @@ if(Boost_FOUND)
   include_directories("${Boost_INCLUDE_DIRS}")
   add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 endif()
+
+install(FILES data/system_config DESTINATION share/pflight RENAME config)

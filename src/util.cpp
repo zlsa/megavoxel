@@ -20,3 +20,14 @@ std::string vector_to_string(std::vector<std::string> vector) {
   }
   return(s);
 }
+
+std::string vector_to_string(std::vector<boost::filesystem::path> vector) {
+  std::string s;
+  int i = 0;
+  for(auto item : vector) {
+    if(i > 0) s += ", ";
+    s += item.string();
+    i += 1;
+  }
+  return(s);
+}

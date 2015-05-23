@@ -15,6 +15,7 @@ static std::string log_colors[] = {
   "\33[33m",
   "\33[31m",
   "\33[31m",
+  "\33[31m",
 };
 
 void log(LogLevel level, std::string message, bool force) {

@@ -4,8 +4,9 @@
 
 #include <string>
 #include <vector>
+#include <boost/filesystem.hpp>
 
-#include "path.hpp"
+#include "config.hpp"
 
 enum ArgumentParseMode {
   ARGUMENT_PARSE_MODE_ARGS,             // default mode (--help file.xml)
@@ -42,20 +43,26 @@ class Program {
  protected:
   std::vector<std::string> args;
 
+  // FLAGS
   bool help;
   bool version;
 
   bool config_use_system;
   bool config_use_user;
-  std::vector<std::string> config_extra;
+  std::vector<boost::filesystem::path> config_extra;
 
   ArgumentFlag value_flag;
+
+  // CONFIG
+  Config config;
 
  public:
   int log_level;
   bool log_use_colors;
 
   Program(int argc, char *argv[]);
+
+  // arguments
   void parseArgs();
   void parseArg(std::string arg);
   void parseShortArg(char arg);
@@ -67,10 +74,15 @@ class Program {
   void setFlag(ArgumentFlag flag, int value);
   void setFlag(ArgumentFlag flag, std::string value);
   void setFlag(ArgumentFlag flag);
-  
+
+  // help
   void displayHelp(bool force = false);
   void displayVersion(bool force = false);
+
+  // config
+  void parseConfig();
   
+  // debugging
   void dump();
 };
 
@@ -81,6 +93,7 @@ class invalid_argument_exception: public std::exception {
   ArgumentPrefix prefix;
   invalid_argument_exception(ArgumentPrefix p, std::string arg) : prefix(p), argument(arg) {};
   const char *what() const throw() { return argument.c_str(); };
+  
 };
 
 #endif

@@ -42,45 +42,6 @@ std::string vector_to_string(std::vector<boost::filesystem::path> vector) {
   return(s);
 }
 
-std::string until_whitespace(std::string string, int start, bool semicolon) {
-  char c;
-  int i;
-
-  std::string output;
-  
-  for(i=start; i<string.size(); i++) {
-    c = string[i];
-    if(isspace(c)) {
-      break;
-    }
-    if(semicolon && c == ';') break;
-    output += c;
-  }
-
-  return(output);
-}
-
-int over_whitespace(std::string string, int start, bool semicolon) {
-  int i;
-  for(i=start; i<string.size(); i++) {
-    if(!isspace(string[i])) {
-      break;
-    }
-    if(semicolon && string[i] != ';') break;
-  }
-  return(i - start);
-}
-
-int until_newline(std::string string, int start) {
-  int i;
-  for(i=start; i<string.size(); i++) {
-    if(string[i] == '\n') {
-      break;
-    }
-  }
-  return(i - start);
-}
-
 std::string plural(int value, std::string single, std::string other) {
   if(value == 1) return single;
   return other;

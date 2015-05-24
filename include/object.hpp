@@ -2,7 +2,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <set>
+#include <vector>
 #include <string>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/glm.hpp>
@@ -28,8 +28,7 @@ class Object {
   Camera *camera;
 
   Object *parent;
-  std::set<Object*> children;
-
+  std::vector<Object*> children;
  public:
   Object();
   glm::vec3 getPosition();
@@ -39,6 +38,9 @@ class Object {
   glm::mat4 getMatrix(bool world=false);
   void updateMatrix();
 
+  void setName(std::string name);
+  std::string getName();
+  
   void setParent(Object *object);
   void remove(Object *object);
   void add(Object *object);

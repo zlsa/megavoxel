@@ -1,6 +1,8 @@
 
 #include "object.hpp"
 
+#include "log.hpp"
+
 Object::Object() {
   this->matrix = glm::mat4(1.0);
   this->mesh   = NULL;
@@ -33,6 +35,15 @@ void Object::updateMatrix() {
     this->world_matrix = this->parent->getMatrix() * this->matrix;
 }
 
+// name
+void Object::setName(std::string name) {
+  this->name = name;
+}
+
+std::string Object::getName() {
+  return(this->name);
+}
+
 // parenting
 
 void Object::setParent(Object *object) {
@@ -41,13 +52,16 @@ void Object::setParent(Object *object) {
 }
 
 void Object::remove(Object *object) {
+  assert(object);
   // TODO: check for existence first
-  this->children.erase(object);
+//  this->children.erase(object);
 }
 
 void Object::add(Object *object) {
+  log(LOG_LEVEL_DUMP, "adding '" + object->getName() + "' to '" + this->getName() + "'");
+  assert(object);
   object->setParent(this);
-  this->children.insert(object);
+  this->children.push_back(object);
 }
 
 // draw

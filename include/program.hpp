@@ -99,6 +99,7 @@ class Program {
   bool shouldExit();
 
   // scene
+  void createScene();
   Scene *getScene();
   
   // debugging

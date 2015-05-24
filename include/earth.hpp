@@ -13,7 +13,7 @@ class EarthTile {
   Object object;
   
  public:
-  EarthTile(Earth *earth);
+  EarthTile(Earth *earth, int number);
 };
 
 class Earth {
@@ -22,8 +22,11 @@ class Earth {
 
  public:
   Mesh *mesh;
+  Object group;
   
   Earth();
+  
+  void create();
 };
 
 #endif

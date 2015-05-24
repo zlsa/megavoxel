@@ -15,9 +15,12 @@ class Scene {
  public:
   Scene();
 
+  void create();
+  
   glm::vec4 getClearColor();
 
   void draw();
+  void add(Object *object);
 };
 
 #endif

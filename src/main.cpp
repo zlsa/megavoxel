@@ -9,7 +9,7 @@
 
 Program *program;
 
-int run(int argc, char *argv[]) {
+void run(int argc, char *argv[]) {
 
   program = new Program(argc, argv);
 
@@ -17,6 +17,8 @@ int run(int argc, char *argv[]) {
   program->parseConfig();
   
   program->displayVersion();
+  
+  program->createScene();
   
   program->createWindow();
   

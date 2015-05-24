@@ -64,3 +64,16 @@ void Mesh::createBuffer() {
   
   delete[] buf;
 }
+
+// get vertex number
+
+int Mesh::getVertexNumber() {
+  return(this->triangles.size() * 3);
+}
+  
+// draw mesh
+
+void Mesh::draw() {
+  glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffer_object_triangles);
+  glDrawArrays(GL_LINE_LOOP, 0, this->getVertexNumber());
+}

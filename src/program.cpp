@@ -25,13 +25,11 @@ Program::Program(int argc, char *argv[]) {
 
 void Program::parseArgs() {
 
-  ArgumentParseMode mode = ARGUMENT_PARSE_MODE_ARGS;
-
   bool invalid = false;
   std::string invalid_argument;
   ArgumentPrefix invalid_prefix = ARGUMENT_PREFIX_NONE;
 
-  for(int i=1; i<this->args.size(); i++) {
+  for(unsigned int i=1; i<this->args.size(); i++) {
     try {
       this->parseArg(this->args[i]);
 
@@ -94,7 +92,7 @@ void Program::parseArg(std::string arg) {
   if(prefix == ARGUMENT_PREFIX_LONG) {
     parseLongArg(argument);
   } else if(prefix == ARGUMENT_PREFIX_SHORT) {
-    for(int i=0; i<argument.size(); i++) {
+    for(unsigned int i=0; i<argument.size(); i++) {
       parseShortArg(argument.c_str()[i]);
     }
   } else {
@@ -303,6 +301,10 @@ bool Program::shouldExit() {
 }
 
 // SCENE
+
+void Program::createScene() {
+  this->scene.create();
+}
 
 Scene *Program::getScene() {
   return(&this->scene);

@@ -11,6 +11,11 @@ struct Triangle {
   int vertex[3];
 };
 
+enum MeshState {
+  MESH_STATE_NOT_READY = 0,
+  MESH_STATE_READY
+};
+
 class Mesh {
  protected:
   int uses;
@@ -22,6 +27,8 @@ class Mesh {
   GLuint vertex_buffer_object_triangles;
   GLuint vertex_buffer_object_uvs;
 
+  MeshState state;
+
  public:
   Mesh();
 
@@ -30,8 +37,13 @@ class Mesh {
   
   void setVertices(std::vector<glm::vec3> vertices);
   void setTriangles(std::vector<Triangle> triangles);
+
+  // get/set
+  int getVertexNumber();
   
   void createBuffer();
+
+  void draw();
 };
 
 #endif

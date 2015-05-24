@@ -1,11 +1,12 @@
 
+#include "pflight_config.hpp"
+
 #include <iostream>
 #include <stdlib.h>
 
-#include "pflight_config.hpp"
+#include "log.hpp"
 #include "program.hpp"
 #include "util.hpp"
-#include "log.hpp"
 
 Program *program;
 

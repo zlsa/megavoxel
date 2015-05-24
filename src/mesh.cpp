@@ -2,22 +2,9 @@
 #include "mesh.hpp"
 
 Mesh::Mesh() {
-  this->uses = 0;
-
   this->vertex_array_object            = -1;
   this->vertex_buffer_object_triangles = -1;
   this->vertex_buffer_object_uvs       = -1;
-}
-
-// Ref-counting
-
-void Mesh::use() {
-  this->uses += 1;
-}
-
-void Mesh::unuse() {
-  this->uses -= 1;
-  if(this->uses == 0) delete this;
 }
 
 // get/set
@@ -46,7 +33,7 @@ void Mesh::createBuffer() {
 
   Triangle *triangle;
   glm::vec3 *vertex;
-  for(int i=0; i<this->triangles.size(); i++) {
+  for(unsigned int i=0; i<this->triangles.size(); i++) {
     triangle = &this->triangles[i];
     for(int j=0; j<3; j++) {
       vertex = &this->vertices[triangle->vertex[j]];

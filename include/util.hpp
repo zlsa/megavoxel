@@ -30,4 +30,6 @@ std::string vector_to_string(std::vector<boost::filesystem::path> vector);
 std::string plural(int value, std::string single = "", std::string other = "s");
 std::string plural(double value, std::string single = "", std::string other = "s");
 
+std::string readFile(std::string filename);
+
 #endif

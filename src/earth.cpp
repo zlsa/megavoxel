@@ -1,8 +1,8 @@
 
 #include "earth.hpp"
 
-#include "scene.hpp"
 #include "program.hpp"
+#include "scene.hpp"
 
 extern Program *program;
 

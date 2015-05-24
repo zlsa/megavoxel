@@ -1,9 +1,10 @@
 
+#include "log.hpp"
+
 #include <iostream>
 
 #include "program.hpp"
 #include "util.hpp"
-#include "log.hpp"
 
 extern Program *program;
 

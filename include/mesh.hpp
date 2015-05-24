@@ -7,6 +7,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "datablock.hpp"
+
 struct Triangle {
   int vertex[3];
 };
@@ -16,9 +18,8 @@ enum MeshState {
   MESH_STATE_READY
 };
 
-class Mesh {
+class Mesh: public Datablock {
  protected:
-  int uses;
   std::vector<glm::vec3> vertices;
   std::vector<Triangle> triangles;
   glm::mat4 world_matrix;
@@ -32,9 +33,6 @@ class Mesh {
  public:
   Mesh();
 
-  void use();
-  void unuse();
-  
   void setVertices(std::vector<glm::vec3> vertices);
   void setTriangles(std::vector<Triangle> triangles);
 

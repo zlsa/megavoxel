@@ -2,6 +2,8 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include <string>
+
 enum LogLevel {
   LOG_LEVEL_DUMP = 0,
   LOG_LEVEL_DEBUG,

@@ -5,8 +5,8 @@
 #include <locale>
 #include <boost/algorithm/string.hpp>
 
-#include "util.hpp"
 #include "log.hpp"
+#include "util.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONFIGITEM
@@ -160,7 +160,7 @@ ConfigItem *Config::readConfigLine(std::string line, std::string filename, int l
   bool in_string = false;
 
   char c;
-  int i;
+  unsigned int i;
   for(i=0; i<line.size(); i++) {
     c = line[i];
     
@@ -204,6 +204,8 @@ ConfigItem *Config::readConfigLine(std::string line, std::string filename, int l
              return(NULL);
            }
            state = CONFIG_STATE_WAIT_NEWLINE;
+           break;
+         default:
            break;
         }
 
@@ -366,7 +368,7 @@ void Config::parseUserConfig() {
 
 void Config::dump() {
   log(LOG_LEVEL_DUMP, " -- dumping Config  -- ");
-  for(int i=0; i<this->items.size(); i++) {
+  for(unsigned int i=0; i<this->items.size(); i++) {
     this->items[i]->dump();
   }
   log(LOG_LEVEL_DUMP, " --   end Config    -- ");

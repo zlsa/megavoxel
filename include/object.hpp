@@ -9,6 +9,7 @@
 
 #include "mesh.hpp"
 #include "camera.hpp"
+#include "datablock.hpp"
 
 enum ObjectType {
   OBJECT_TYPE_NONE = 0,
@@ -17,7 +18,7 @@ enum ObjectType {
   OBJECT_TYPE_CAMERA,
 };
 
-class Object {
+class Object: public Datablock {
  protected:
   std::string name;
   

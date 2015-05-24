@@ -6,7 +6,11 @@ add_executable(pflight
   config.cpp
   
   window.cpp
+
+  shader.cpp
   
+  datablock.cpp
+  material.cpp
   object.cpp
   mesh.cpp
   camera.cpp

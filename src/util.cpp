@@ -51,3 +51,11 @@ std::string plural(float value, std::string single, std::string other) {
   if(value == 1.0) return single;
   return other;
 }
+
+// file io
+
+std::string readFile(std::string filename) {
+  std::ifstream file(filename);
+  std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+  return content;
+}

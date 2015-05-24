@@ -34,8 +34,11 @@ class Window {
   void create();
   
   void update_size();
+  
   void tick();
   bool shouldClose();
+
+  void draw();
 };
 
 #endif

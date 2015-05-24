@@ -53,19 +53,25 @@ void Window::update_size() {
   glfwGetWindowSize(this->window, &this->width, &this->height);
 }
 
+bool Window::shouldClose() {
+  return(this->should_close);
+}
+
 void Window::tick() {
   this->should_close = glfwWindowShouldClose(this->window);
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   this->update_size();
+
+  this->draw();
 
   glfwSwapBuffers(this->window);
   glfwPollEvents();
 }
 
-bool Window::shouldClose() {
-  return(this->should_close);
+void Window::draw() {
+  Scene *scene = program->getScene();
+
+  scene->draw();
 }
 
 // DESTRUCTOR

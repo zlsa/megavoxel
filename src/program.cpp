@@ -302,6 +302,12 @@ bool Program::shouldExit() {
   return(this->should_exit);
 }
 
+// SCENE
+
+Scene *Program::getScene() {
+  return(&this->scene);
+}
+
 // DEBUG
 
 void Program::dump() {

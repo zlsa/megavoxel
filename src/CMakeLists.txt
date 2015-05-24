@@ -7,8 +7,9 @@ add_executable(pflight
   
   window.cpp
   
-  mesh.cpp
   object.cpp
+  mesh.cpp
+  camera.cpp
 
   scene.cpp
   earth.cpp

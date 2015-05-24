@@ -8,6 +8,7 @@
 
 #include "config.hpp"
 #include "window.hpp"
+#include "scene.hpp"
 
 enum ArgumentParseMode {
   ARGUMENT_PARSE_MODE_ARGS,             // default mode (--help file.xml)
@@ -62,6 +63,9 @@ class Program {
   
   bool should_exit;
 
+  // SCENE
+  Scene scene;
+
  public:
   int log_level;
   bool log_use_colors;
@@ -93,6 +97,9 @@ class Program {
   void createWindow();
   void tick();
   bool shouldExit();
+
+  // scene
+  Scene *getScene();
   
   // debugging
   void dump();

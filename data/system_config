@@ -1,6 +1,6 @@
 // System config file
 
 int window_width  = 1280;
-int window_height = 512;
+int window_height = 720;
 
 int render_aa_samples = 4;

@@ -9,10 +9,11 @@
 class Material: public Datablock {
  protected:
   Shader *shader;
-//  std::vector<Texture*> textures;
   
  public:
   Material();
+
+  void setShader(Shader *shader);
 };
 
 #endif

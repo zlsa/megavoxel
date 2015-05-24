@@ -2,7 +2,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <vector>
+#include <set>
 #include <string>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/glm.hpp>
@@ -20,28 +20,33 @@ enum ObjectType {
 
 class Object: public Datablock {
  protected:
-  std::string name;
   
   glm::mat4 matrix;
   glm::mat4 world_matrix;
 
+  ObjectType type;
+  
   Mesh *mesh;
   Camera *camera;
 
   Object *parent;
-  std::vector<Object*> children;
+  std::set<Object*> children;
+  
  public:
   Object();
+  
+  void deleteSelf();
+  void deleteData();
+  
   glm::vec3 getPosition();
+  
+  void setType(ObjectType type);
   
   void setMesh(Mesh *mesh);
 
   glm::mat4 getMatrix(bool world=false);
   void updateMatrix();
 
-  void setName(std::string name);
-  std::string getName();
-  
   void setParent(Object *object);
   void remove(Object *object);
   void add(Object *object);

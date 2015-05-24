@@ -59,3 +59,12 @@ std::string readFile(std::string filename) {
   std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
   return content;
 }
+
+std::string readDataFile(std::string directory, std::string filename) {
+  boost::filesystem::path dir(DATA_DIRECTORY / boost::filesystem::path(directory));
+  boost::filesystem::path path(dir / boost::filesystem::path(filename));
+  
+  std::ifstream file(path.string());
+  std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+  return content;
+}

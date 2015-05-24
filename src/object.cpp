@@ -4,21 +4,50 @@
 #include "log.hpp"
 
 Object::Object() {
+  this->type   = OBJECT_TYPE_NONE;
+
+  this->setName("unnamed Object");
+  
+  this->parent = NULL;
   this->matrix = glm::mat4(1.0);
   this->mesh   = NULL;
+  this->camera = NULL;
+}
+
+void Object::deleteSelf() {
+  for(Object *object : this->children) {
+    this->remove(object);
+  }
+  this->deleteData();
+  log(LOG_LEVEL_DUMP, "deleting Object '" + this->getName() + "'");
+}
+
+void Object::deleteData() {
+  if(this->mesh)
+    this->mesh->unuse();
+  // TODO add all types here
 }
 
 glm::vec3 Object::getPosition() {
   return(glm::vec3(this->matrix[3]));
 }
 
+void Object::setType(ObjectType type) {
+  this->type = type;
+}
+
 void Object::setMesh(Mesh *mesh) {
-  if(this->mesh) this->mesh->unuse();
+  assert(this->type == OBJECT_TYPE_MESH);
+  assert(mesh);
+  
+  Mesh *temp = this->mesh;
   
   if(mesh != NULL) {
     this->mesh = mesh;
     mesh->use();
   }
+  
+  if(temp) temp->unuse();
 }
 
 // matrix stuff
@@ -35,33 +64,33 @@ void Object::updateMatrix() {
     this->world_matrix = this->parent->getMatrix() * this->matrix;
 }
 
-// name
-void Object::setName(std::string name) {
-  this->name = name;
-}
-
-std::string Object::getName() {
-  return(this->name);
-}
-
 // parenting
 
 void Object::setParent(Object *object) {
-  if(this->parent) this->parent->remove(this);
+  log(LOG_LEVEL_DUMP, "parenting '" + this->getName() + "' to '" + object->getName() + "'");
+  Object *temp = this->parent;
   this->parent = object;
+  
+  if(temp != NULL) temp->remove(this);
 }
 
 void Object::remove(Object *object) {
   assert(object);
-  // TODO: check for existence first
-//  this->children.erase(object);
+  
+  if(this->children.find(object) == this->children.end()) {
+    log(LOG_LEVEL_DUMP, "removing '" + object->getName() + "' from '" + this->getName() + "'");
+    object->unuse();
+    this->children.erase(object);
+  }
+  
 }
 
 void Object::add(Object *object) {
-  log(LOG_LEVEL_DUMP, "adding '" + object->getName() + "' to '" + this->getName() + "'");
   assert(object);
+  log(LOG_LEVEL_DUMP, "adding '" + object->getName() + "' to '" + this->getName() + "'");
   object->setParent(this);
-  this->children.push_back(object);
+  this->children.insert(object);
+  object->use();
 }
 
 // draw

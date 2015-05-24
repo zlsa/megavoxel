@@ -11,7 +11,7 @@
 
 #ifdef __linux
 #define CONFIG_SYSTEM_PATH SYSTEM_PREFIX "/share/pflight/config"
-#define CONFIG_USER_DIRECTORY boost::filesystem::path(getenv("HOME")).string() + "/.config/pflight/"
+#define CONFIG_USER_DIRECTORY boost::filesystem::path(getenv("HOME")).string() + "/.pflight/"
 #define CONFIG_USER_PATH CONFIG_USER_DIRECTORY "config"
 #else
 #endif
@@ -67,6 +67,8 @@ class ConfigItem {
   
  public:
   ConfigItem();
+  ~ConfigItem();
+  
   void setType(ConfigType type);
   void setKey(std::string key);
   void setValue(bool value);

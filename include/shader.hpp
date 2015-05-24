@@ -5,12 +5,14 @@
 #include <string>
 #include <GLFW/glfw3.h>
 
+#include "datablock.hpp"
+
 enum ShaderState {
   SHADER_STATE_NOT_READY = 0,
   SHADER_STATE_READY = 0,
 };
 
-class Shader {
+class Shader: public Datablock {
  protected:
   GLuint program;
   GLuint vertex_shader;
@@ -21,6 +23,8 @@ class Shader {
  public:
   Shader();
   Shader(std::string vertex_filename, std::string fragment_filename);
+  void deleteSelf();
+  
   void create();
 
   void createShader(std::string vertex_filename, std::string fragment_filename);

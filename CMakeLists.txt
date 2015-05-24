@@ -52,3 +52,4 @@ include_directories("${Boost_INCLUDE_DIRS}")
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 
 install(FILES data/system_config DESTINATION share/pflight RENAME config)
+install(FILES data/shaders DESTINATION share/pflight)

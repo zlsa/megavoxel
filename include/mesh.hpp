@@ -8,14 +8,10 @@
 #include <GLFW/glfw3.h>
 
 #include "datablock.hpp"
+#include "material.hpp"
 
 struct Triangle {
   int vertex[3];
-};
-
-enum MeshState {
-  MESH_STATE_NOT_READY = 0,
-  MESH_STATE_READY
 };
 
 class Mesh: public Datablock {
@@ -23,15 +19,16 @@ class Mesh: public Datablock {
   std::vector<glm::vec3> vertices;
   std::vector<Triangle> triangles;
   glm::mat4 world_matrix;
+
+  Material *material;
   
   GLuint vertex_array_object;
   GLuint vertex_buffer_object_triangles;
-  GLuint vertex_buffer_object_uvs;
-
-  MeshState state;
 
  public:
   Mesh();
+  
+  void deleteSelf();
 
   void setVertices(std::vector<glm::vec3> vertices);
   void setTriangles(std::vector<Triangle> triangles);

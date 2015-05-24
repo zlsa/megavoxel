@@ -8,6 +8,7 @@
 #include <string>
 
 #include "util.hpp"
+#include "log.hpp"
 
 Shader::Shader() {
   this->create();
@@ -16,12 +17,23 @@ Shader::Shader() {
 Shader::Shader(std::string vertex_filename, std::string fragment_filename) {
   this->create();
 
-  this->createShader(vertex_filename, fragment_filename);
+//  this->createShader(vertex_filename, fragment_filename);
+}
+
+void Shader::deleteSelf() {
+  log(LOG_LEVEL_DUMP, "deleting Shader");
+
+//  if(this->program >= 0)
+    glDeleteProgram(this->program);
+
+//  if(this->vertex_shader >= 0)
+    glDeleteShader(this->vertex_shader);
+//  if(this->fragment_shader >= 0)
+    glDeleteShader(this->fragment_shader);
 }
 
 void Shader::create() {
-//  this->createVertexShader();
-//  this->createProgram();
+  this->setName("unnamed Shader");
 }
 
 void Shader::createShader(std::string vertex_filename, std::string fragment_filename) {

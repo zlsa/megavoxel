@@ -10,10 +10,14 @@ class Scene {
   Earth earth;
   glm::vec4 clear_color;
   
-  Object root;
+  Object *root;
+  
+  Shader *shaders;
+  Material *materials;
 
  public:
   Scene();
+  ~Scene();
 
   void create();
   
@@ -21,6 +25,10 @@ class Scene {
 
   void draw();
   void add(Object *object);
+  
+  Shader *newShader(std::string vertex_filename, std::string fragment_filename);
+  Material *newMaterial();
+  Mesh *newMesh();
 };
 
 #endif

@@ -64,7 +64,7 @@ class Program {
   bool should_exit;
 
   // SCENE
-  Scene scene;
+  Scene *scene;
 
  public:
   int log_level;

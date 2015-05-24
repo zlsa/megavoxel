@@ -278,6 +278,8 @@ Config *Program::getConfig() {
 
 void Program::createWindow() {
 
+  log(LOG_LEVEL_DUMP, "glfwInit()");
+
   if(!glfwInit())
     log(LOG_LEVEL_FATAL, "could not initialize GLFW");
   
@@ -303,11 +305,12 @@ bool Program::shouldExit() {
 // SCENE
 
 void Program::createScene() {
-  this->scene.create();
+  this->scene = new Scene();
+  this->scene->create();
 }
 
 Scene *Program::getScene() {
-  return(&this->scene);
+  return(this->scene);
 }
 
 // DEBUG
@@ -329,8 +332,13 @@ void Program::dump() {
 // DESTRUCTOR
 
 Program::~Program() {
-  glfwTerminate();
+  if(this->scene != NULL)
+    this->scene->~Scene();
+  
   delete this->window;
+  
   delete this->config;
+  
+  glfwTerminate();
   log(LOG_LEVEL_DUMP, "deleting Program");
 }

@@ -19,9 +19,8 @@ void run(int argc, char *argv[]) {
   
   program->displayVersion();
   
-  program->createScene();
-  
   program->createWindow();
+  program->createScene();
   
   program->dump();
 

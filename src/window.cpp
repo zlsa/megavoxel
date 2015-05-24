@@ -41,6 +41,7 @@ void Window::create() {
   
   glfwMakeContextCurrent(this->window);
 
+  glewExperimental = GL_TRUE;
   GLenum err = glewInit();
   if(err != GLEW_OK) {
     log(LOG_LEVEL_FATAL, "could not initialize GLEW");

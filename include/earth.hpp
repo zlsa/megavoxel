@@ -23,6 +23,7 @@ class Earth {
  public:
   Mesh *mesh;
   Object group;
+  Material *material;
   
   Earth();
   

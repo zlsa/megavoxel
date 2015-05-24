@@ -2,9 +2,18 @@
 #include "mesh.hpp"
 
 Mesh::Mesh() {
+  this->setName("unnamed Mesh");
+  
   this->vertex_array_object            = -1;
   this->vertex_buffer_object_triangles = -1;
-  this->vertex_buffer_object_uvs       = -1;
+}
+
+void Mesh::deleteSelf() {
+  if(this->vertex_array_object >= 0)
+    glDeleteVertexArrays(1, &this->vertex_array_object);
+  
+  if(this->vertex_buffer_object_triangles >= 0)
+    glDeleteBuffers(2, &this->vertex_buffer_object_triangles);
 }
 
 // get/set
@@ -45,10 +54,6 @@ void Mesh::createBuffer() {
   
   glBufferData(GL_ARRAY_BUFFER, size, buf, GL_STATIC_DRAW);
 
-  // uvs
-  
-  glGenBuffers(1, &this->vertex_buffer_object_uvs);
-  
   delete[] buf;
 }
 

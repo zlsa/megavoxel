@@ -16,6 +16,10 @@ ConfigItem::ConfigItem() {
   
 }
 
+ConfigItem::~ConfigItem() {
+  log(LOG_LEVEL_DUMP, "deleting ConfigItem '" + this->getKey() + "'");
+}
+
 void ConfigItem::setType(ConfigType type) {
   this->type = type;
 }
@@ -377,6 +381,9 @@ void Config::dump() {
 // DESTRUCTOR
 
 Config::~Config() {
+  for(unsigned int i=0; i<this->items.size(); i++) {
+    delete this->items[i];
+  }
   log(LOG_LEVEL_DUMP, "deleting Config");
 }
 

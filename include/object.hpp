@@ -51,7 +51,7 @@ class Object: public Datablock {
   void remove(Object *object);
   void add(Object *object);
 
-  void drawMesh();
+  void drawData();
   void drawChildren();
   void draw();
 };

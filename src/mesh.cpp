@@ -1,6 +1,9 @@
 
 #include "mesh.hpp"
 
+#include "log.hpp"
+
+
 Mesh::Mesh() {
   this->setName("unnamed Mesh");
   
@@ -65,7 +68,7 @@ int Mesh::getVertexNumber() {
   
 // draw mesh
 
-void Mesh::draw() {
+void Mesh::draw(glm::mat4 matrix) {
   glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffer_object_triangles);
   glDrawArrays(GL_LINE_LOOP, 0, this->getVertexNumber());
 }

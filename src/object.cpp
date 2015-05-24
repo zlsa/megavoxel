@@ -58,7 +58,7 @@ glm::mat4 Object::getMatrix(bool world) {
 }
 
 void Object::updateMatrix() {
-  if(!this->parent)
+  if(this->parent == NULL)
     this->world_matrix = this->matrix;
   else
     this->world_matrix = this->parent->getMatrix() * this->matrix;
@@ -67,7 +67,11 @@ void Object::updateMatrix() {
 // parenting
 
 void Object::setParent(Object *object) {
+  
+#if LOG_SCENEGRAPH_CHANGES
   log(LOG_LEVEL_DUMP, "parenting '" + this->getName() + "' to '" + object->getName() + "'");
+#endif
+  
   Object *temp = this->parent;
   this->parent = object;
   
@@ -78,7 +82,9 @@ void Object::remove(Object *object) {
   assert(object);
   
   if(this->children.find(object) == this->children.end()) {
+#if LOG_SCENEGRAPH_CHANGES
     log(LOG_LEVEL_DUMP, "removing '" + object->getName() + "' from '" + this->getName() + "'");
+#endif
     object->unuse();
     this->children.erase(object);
   }
@@ -87,7 +93,9 @@ void Object::remove(Object *object) {
 
 void Object::add(Object *object) {
   assert(object);
+#if LOG_SCENEGRAPH_CHANGES
   log(LOG_LEVEL_DUMP, "adding '" + object->getName() + "' to '" + this->getName() + "'");
+#endif
   object->setParent(this);
   this->children.insert(object);
   object->use();
@@ -95,7 +103,12 @@ void Object::add(Object *object) {
 
 // draw
 
-void Object::drawMesh() {
+void Object::drawData() {
+  switch(this->type) {
+   case OBJECT_TYPE_MESH:
+     this->mesh->draw(this->world_matrix);
+     break;
+  }
 }
 
 void Object::drawChildren() {
@@ -105,6 +118,9 @@ void Object::drawChildren() {
 }
 
 void Object::draw() {
-  this->drawMesh();
+  this->updateMatrix();
+  
+  this->drawData();
+  
   this->drawChildren();
 }

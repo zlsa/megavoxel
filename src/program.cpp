@@ -278,8 +278,6 @@ Config *Program::getConfig() {
 
 void Program::createWindow() {
 
-  log(LOG_LEVEL_DUMP, "glfwInit()");
-
   if(!glfwInit())
     log(LOG_LEVEL_FATAL, "could not initialize GLFW");
   

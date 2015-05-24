@@ -4,6 +4,9 @@
 
 #include <string>
 
+#define LOG_REFCOUNT 0
+#define LOG_SCENEGRAPH_CHANGES 0
+
 enum LogLevel {
   LOG_LEVEL_DUMP = 0,
   LOG_LEVEL_DEBUG,

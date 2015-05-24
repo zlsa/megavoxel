@@ -28,6 +28,8 @@ void run(int argc, char *argv[]) {
     program->tick();
   }
 
+  log(LOG_LEVEL_INFO, "exiting normally");
+
   delete program;
 }
 

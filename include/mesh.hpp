@@ -18,7 +18,6 @@ class Mesh: public Datablock {
  protected:
   std::vector<glm::vec3> vertices;
   std::vector<Triangle> triangles;
-  glm::mat4 world_matrix;
 
   Material *material;
   
@@ -38,7 +37,7 @@ class Mesh: public Datablock {
   
   void createBuffer();
 
-  void draw();
+  void draw(glm::mat4 matrix);
 };
 
 #endif

@@ -87,6 +87,7 @@ class Program {
 
   // config
   void parseConfig();
+  Config *getConfig();
 
   // window
   void createWindow();

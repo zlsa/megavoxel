@@ -4,6 +4,14 @@
 Ever wanted to fly through CMakeLists.txt? Possibly a poorly written
 C++ file? Well, here's your chance!
 
+# Dependencies
+
+* `C++11` compiler. Works with `g++`.
+* Boost
+* `GLFW3`
+* `GLEW`
+* `GLM`
+
 # License
 
 ## Code

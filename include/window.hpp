@@ -3,11 +3,8 @@
 #define WINDOW_H
 
 #include <string>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <osgViewer/Viewer>
-#include <osgViewer/ViewerEventHandlers>
-#include <osgGA/TrackballManipulator>
-#include <osgDB/ReadFile>
 
 #define WINDOW_DEFAULT_WIDTH (1024)
 #define WINDOW_DEFAULT_HEIGHT (768)
@@ -27,16 +24,16 @@ class Window {
 
   bool should_close;
 
-  osg::ref_ptr<osgViewer::Viewer> viewer;
-  osg::observer_ptr<osgViewer::GraphicsWindow> graphics_window;
-
  public:
   Window();
   ~Window();
 
   void setSize(int width, int height);
   std::string getStringSize();
+  
   void create();
+  
+  void update_size();
   void tick();
   bool shouldClose();
 };

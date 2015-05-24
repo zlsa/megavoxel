@@ -267,27 +267,32 @@ ConfigItem *Config::getItem(std::string key) {
 
 bool Config::getBoolValue(std::string key, bool def) {
   ConfigItem *item = this->getItem(key);
-  return(item ? item->getBoolValue() : def);
+  if(item == NULL) log(LOG_LEVEL_NOTICE, "could not get config key '" + key + "'");
+  return(item != NULL ? item->getBoolValue() : def);
 }
 
 int Config::getIntValue(std::string key, int def) {
   ConfigItem *item = this->getItem(key);
-  return(item ? item->getIntValue() : def);
+  if(item == NULL) log(LOG_LEVEL_NOTICE, "could not get config key '" + key + "'");
+  return(item != NULL ? item->getIntValue() : def);
 }
 
 double Config::getDoubleValue(std::string key, double def) {
   ConfigItem *item = this->getItem(key);
-  return(item ? item->getDoubleValue() : def);
+  if(item == NULL) log(LOG_LEVEL_NOTICE, "could not get config key '" + key + "'");
+  return(item != NULL ? item->getDoubleValue() : def);
 }
 
 std::string Config::getStringValue(std::string key, std::string def) {
   ConfigItem *item = this->getItem(key);
-  return(item ? item->getStringValue() : def);
+  if(item == NULL) log(LOG_LEVEL_NOTICE, "could not get config key '" + key + "'");
+  return(item != NULL ? item->getStringValue() : def);
 }
 
 std::vector<boost::filesystem::path> Config::getPathValue(std::string key) {
   ConfigItem *item = this->getItem(key);
-  return(item ? item->getPathValue() : std::vector<boost::filesystem::path>());
+  if(item == NULL) log(LOG_LEVEL_NOTICE, "could not get config key '" + key + "'");
+  return(item != NULL ? item->getPathValue() : std::vector<boost::filesystem::path>());
 }
 
 int Config::readConfigFile(std::ifstream *file, std::string filename) {

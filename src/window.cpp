@@ -3,6 +3,9 @@
 
 #include "log.hpp"
 #include "util.hpp"
+#include "program.hpp"
+
+extern Program *program;
 
 Window::Window() {
   this->window = NULL;
@@ -24,6 +27,11 @@ std::string Window::getStringSize() {
 }
 
 void Window::create() {
+
+  int samples = program->getConfig()->getIntValue("render_aa_samples", 0);
+  log(LOG_LEVEL_DUMP, "aa samples: " + std::to_string(samples));
+  glfwWindowHint(GLFW_SAMPLES, samples);
+  
   this->window = glfwCreateWindow(this->width, this->height, this->title.c_str(), NULL, NULL);
   
   if(this->window == NULL) {
@@ -32,60 +40,25 @@ void Window::create() {
   }
   
   glfwMakeContextCurrent(this->window);
+
+  GLenum err = glewInit();
+  if(err != GLEW_OK) {
+    log(LOG_LEVEL_FATAL, "could not initialize GLEW");
+  }
   
   log(LOG_LEVEL_DUMP, "created " + this->getStringSize() + " window with title '" + this->title + "'");
+}
 
-  osg::ref_ptr<osg::Node> model = osgDB::readNodeFile("test.ac");
-  if(!model) {
-    log(LOG_LEVEL_FATAL, "could not open model 'test.ac'");
-  }
-
-  this->viewer = new osgViewer::Viewer;
-  this->graphics_window = this->viewer->setUpViewerAsEmbeddedInWindow(0, 0, this->width, this->height);
-  this->viewer->setSceneData(model.get());
-  this->viewer->setCameraManipulator(new osgGA::TrackballManipulator);
-  this->viewer->addEventHandler(new osgViewer::StatsHandler);
-  this->viewer->realize();
+void Window::update_size() {
+  glfwGetWindowSize(this->window, &this->width, &this->height);
 }
 
 void Window::tick() {
-  glfwGetWindowSize(this->window, &this->width, &this->height);
-  
   this->should_close = glfwWindowShouldClose(this->window);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if(!this->viewer.valid())
-    log(LOG_LEVEL_FATAL, "osg viewer is not valid");
-  if(!this->graphics_window.valid())
-    log(LOG_LEVEL_FATAL, "osg graphics window is not valid");
-
-  osg::DisplaySettings::instance()->setNumMultiSamples(8);
-  
-  this->graphics_window->resized(this->graphics_window->getTraits()->x,
-                                 this->graphics_window->getTraits()->y,
-                                 this->width,
-                                 this->height);
-  this->graphics_window->getEventQueue()->windowResize(this->graphics_window->getTraits()->x,
-                                                       this->graphics_window->getTraits()->y,
-                                                       this->width,
-                                                       this->height);
-
-  double dx, dy;
-  glfwGetCursorPos(this->window, &dx, &dy);
-  int x = dx, y = dy;
-
-  this->graphics_window->getEventQueue()->mouseMotion(x, y);
-                   
-  for(int i=0; i<3; i++) {
-    if(glfwGetMouseButton(this->window, i) == GLFW_PRESS) {
-      this->graphics_window->getEventQueue()->mouseButtonPress(x, y, i);
-    } else {
-      this->graphics_window->getEventQueue()->mouseButtonRelease(x, y, i);
-    }
-  }
-  
-  this->viewer->frame();
+  this->update_size();
 
   glfwSwapBuffers(this->window);
   glfwPollEvents();

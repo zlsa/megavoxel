@@ -12,10 +12,13 @@ set(PFLIGHT_VERSION_PATCH 0)
 
 # REQUIRED LIBRARIES
 
-find_package(OpenSceneGraph REQUIRED osgText osgSim osgDB osgParticle osgGA osgViewer osgUtil)
+find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
 
 pkg_search_module(GLFW REQUIRED glfw3)
+pkg_search_module(GLEW REQUIRED glew)
+
+include_directories(${GLM_INCLUDE_DIRS})
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
@@ -29,7 +32,7 @@ find_package(Boost 1.40
 
 # and here we go
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
@@ -44,8 +47,6 @@ include_directories("${PROJECT_SOURCE_DIR}/include/")
 include_directories("${PROJECT_BINARY_DIR}/include/")
 include_directories("${GLFW_INCLUDE_DIRS}")
 include_directories("${Boost_INCLUDE_DIRS}")
-include_directories("${OPENSCENEGRAPH_INCLUDE_DIRS}")
-
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 

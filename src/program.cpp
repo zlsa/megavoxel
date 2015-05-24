@@ -272,6 +272,10 @@ void Program::parseConfig() {
   
 }
 
+Config *Program::getConfig() {
+  return(this->config);
+}
+
 // WINDOW
 
 void Program::createWindow() {

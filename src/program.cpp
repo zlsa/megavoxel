@@ -23,47 +23,74 @@ Program::Program(int argc, char *argv[]) {
   this->should_exit       = false;
 }
 
+// Parses command-line arguments
 void Program::parseArgs() {
 
+  // We keep track of only one invalid argument. If we have one (or
+  // more), `invalid` is set to true, and `invalid_argument` and
+  // `invalid_prefix` are populated.
+  
   bool invalid = false;
   std::string invalid_argument;
   ArgumentPrefix invalid_prefix = ARGUMENT_PREFIX_NONE;
 
+  // For each argument in the list...
+  
   for(unsigned int i=1; i<this->args.size(); i++) {
     try {
+
+      // ... try to parse it.
       this->parseArg(this->args[i]);
 
+      // Check if it's a standalone argument (i.e. not single, `-h` or
+      // double, `--help`)
+      
       if(this->value_flag != ARGUMENT_FLAG_NONE) {
+
         if(i > this->args.size() - 2) {
           throw invalid_argument_exception(ARGUMENT_PREFIX_VALUE, this->args[i]);
         }
+        
         i += 1;
+
+        // Handle `-c <file>`.
         if(this->value_flag == ARGUMENT_FLAG_CONFIG_EXTRA) {
           this->parseArgValue(this->value_flag, this->args[i]);
         }
+        
       }
+      
     } catch(invalid_argument_exception e) {
+
+      // Only set the flags if we're not already keeping track of an
+      // invalid argument.
       if(!invalid) {
         invalid = true;
         invalid_argument = e.argument;
         invalid_prefix = e.prefix;
       }
+      
     }
   }
 
+  // First, if requested, display help no matter what.
   if(this->help) {
     this->displayHelp(true);
     throw exit_exception();
-    
+
+    // Then, if requested, display version.
   } else if(this->version) {
     this->displayVersion(true);
     throw exit_exception();
-    
+
+    // Then, if there's an invalid argument, log it and exit (LOG_LEVEL_FATAL).
   } else if(invalid) {
+    this->displayHelp(true);
+    
     if(invalid_prefix == ARGUMENT_PREFIX_SHORT) {
-      log(LOG_LEVEL_FATAL, "invalid short argument '" + invalid_argument + "'");
+      log(LOG_LEVEL_FATAL, "unrecognized short argument '" + invalid_argument + "'");
     } else if(invalid_prefix == ARGUMENT_PREFIX_LONG) {
-      log(LOG_LEVEL_FATAL, "invalid long argument '" + invalid_argument + "'");
+      log(LOG_LEVEL_FATAL, "unrecognized long argument '" + invalid_argument + "'");
     } else if(invalid_prefix == ARGUMENT_PREFIX_VALUE) {
       log(LOG_LEVEL_FATAL, "expected a value after '" + invalid_argument + "'");
     } else {
@@ -75,34 +102,49 @@ void Program::parseArgs() {
   
 }
 
+// Parse a single argument, short or long.
+
 void Program::parseArg(std::string arg) {
+  
+  // ARGUMENT_PREFIX_NONE means we have no argument (i.e. direct string)
   ArgumentPrefix prefix = ARGUMENT_PREFIX_NONE;
 
   this->value_flag = ARGUMENT_FLAG_NONE;
+
+  // If the string starts with a dash, it's either a short argument or
+  // a long argument.
   
   if(arg.size() >= 2 && arg[0] == '-') {
     prefix = ARGUMENT_PREFIX_SHORT;
+    
+    // If the second character is also a dash, it's a long argument.
     if(arg.size() >= 3 && arg[1] == '-') {
       prefix = ARGUMENT_PREFIX_LONG;
     }
   }
 
+  // Remove the prefix.
   std::string argument(arg.substr(prefix));
-
+  
+  // Parse the long argument.
   if(prefix == ARGUMENT_PREFIX_LONG) {
     parseLongArg(argument);
+    
+    // Parse each short argument (allows for syntax like `-abcd`).
   } else if(prefix == ARGUMENT_PREFIX_SHORT) {
     for(unsigned int i=0; i<argument.size(); i++) {
       parseShortArg(argument.c_str()[i]);
     }
+    
+    // Otherwise, log an error. This is caught by `Program::parseArgs`, above.
   } else {
-    log(LOG_LEVEL_DUMP, "argument: " + argument);
     log(LOG_LEVEL_DUMP, "argument: " + argument);
     throw invalid_argument_exception(prefix, argument);
   }
 
 }
 
+// Parses a short argument.
 void Program::parseShortArg(char arg) {
   if(this->value_flag != ARGUMENT_FLAG_NONE) {
     throw invalid_argument_exception(ARGUMENT_PREFIX_SHORT, std::string(1, arg));

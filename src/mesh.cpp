@@ -3,7 +3,6 @@
 
 #include "log.hpp"
 
-
 Mesh::Mesh() {
   this->setName("unnamed Mesh");
   

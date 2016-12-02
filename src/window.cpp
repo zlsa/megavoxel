@@ -30,6 +30,7 @@ void Window::create() {
 
   int samples = program->getConfig()->getIntValue("render_aa_samples", 0);
   log(LOG_LEVEL_DUMP, "aa samples: " + std::to_string(samples));
+  
   glfwWindowHint(GLFW_SAMPLES, samples);
   
   this->window = glfwCreateWindow(this->width, this->height, this->title.c_str(), NULL, NULL);

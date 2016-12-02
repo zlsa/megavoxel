@@ -139,6 +139,23 @@ std::string ConfigItem::getAutoValue() {
   }
 }
 
+std::string ConfigItem::configTypeToString(ConfigType type) {
+  switch(type) {
+   case CONFIG_TYPE_BOOL:
+     return "bool";
+   case CONFIG_TYPE_INT:
+     return "int";
+   case CONFIG_TYPE_DOUBLE:
+     return "double";
+   case CONFIG_TYPE_STRING:
+     return "string";
+   case CONFIG_TYPE_PATH:
+     return "path";
+   default:
+     return "unknown";
+  }
+}
+
 void ConfigItem::dump() {
   log(LOG_LEVEL_DUMP, CONFIG_TYPE(this->getType()) + std::string(" ") + this->key + " = " + this->getAutoValue() + ";");
 }
@@ -178,14 +195,14 @@ ConfigItem *Config::readConfigLine(std::string line, std::string filename, int l
         switch(state) {
          case CONFIG_STATE_WAIT_TYPE:
            if((type = convertStringToType(buffer)) == CONFIG_TYPE_NONE) {
-             log(LOG_LEVEL_WARN, "invalid type '" + buffer + "'" CONFIG_FILE_INFO(filename, line_number));
+             log(LOG_LEVEL_WARN, "unrecognized type '" + buffer + "'" CONFIG_FILE_INFO(filename, line_number));
              return(NULL);
            }
            state = CONFIG_STATE_WAIT_KEY;
            break;
          case CONFIG_STATE_WAIT_KEY:
            if(!isValidKey(buffer)) {
-             log(LOG_LEVEL_WARN, "invalid key '" + buffer + "'" CONFIG_FILE_INFO(filename, line_number));
+             log(LOG_LEVEL_WARN, "key '" + buffer + "' contains invalid parameters" CONFIG_FILE_INFO(filename, line_number));
              return(NULL);
            }
            key = buffer;
@@ -252,7 +269,8 @@ ConfigItem *Config::readConfigLine(std::string line, std::string filename, int l
     item->setKey(key);
     item->setValueAuto(value);
   } catch(invalid_value_exception e) {
-    log(LOG_LEVEL_WARN, "invalid value '" + e.value + "'" CONFIG_FILE_INFO(filename, line_number));
+    log(LOG_LEVEL_WARN, "could not use value '" + e.value + "' for '" +
+        ConfigItem::configTypeToString(item->getType()) + " " + item->getKey() + "'" + CONFIG_FILE_INFO(filename, line_number));
   }
 
   return(item);

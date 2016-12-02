@@ -86,6 +86,8 @@ class ConfigItem {
   std::string getStringValue();
   std::vector<boost::filesystem::path> getPathValue();
   std::string getAutoValue();
+
+  static std::string configTypeToString(ConfigType type);
   
   // debugging
   void dump();

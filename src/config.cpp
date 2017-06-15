@@ -377,7 +377,7 @@ void Config::parseUserConfig() {
     log(LOG_LEVEL_NOTICE, "created config directory '" + config_user_directory.string() + "'");
       
     std::ofstream outfile(config_user_path.string());
-    outfile << "// created by pflight" << std::endl;
+    outfile << "// created by megavoxel" << std::endl;
     outfile.close();
       
     log(LOG_LEVEL_NOTICE, "created user config file '" + config_user_path.string() + "'");

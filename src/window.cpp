@@ -9,7 +9,7 @@ extern Program *program;
 
 Window::Window() {
   this->window = NULL;
-  this->title  = "pFlight";
+  this->title  = "MegaVoxel";
   this->width  = 1;
   this->height = 1;
   this->fullscreen = false;
@@ -27,7 +27,6 @@ std::string Window::getStringSize() {
 }
 
 void Window::create() {
-
   int samples = program->getConfig()->getIntValue("render_aa_samples", 0);
   log(LOG_LEVEL_DUMP, "aa samples: " + std::to_string(samples));
   

@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.1)
 
 # NAME
-project(pFlight)
+project(megavoxel)
 
 # VERSION
-set(PFLIGHT_VERSION "0.1.0")
+set(MEGAVOXEL_VERSION "0.1.0")
 
-set(PFLIGHT_VERSION_MAJOR 0)
-set(PFLIGHT_VERSION_MINOR 1)
-set(PFLIGHT_VERSION_PATCH 0)
+set(MEGAVOXEL_VERSION_MAJOR 0)
+set(MEGAVOXEL_VERSION_MINOR 1)
+set(MEGAVOXEL_VERSION_PATCH 0)
 
 # REQUIRED LIBRARIES
 
@@ -40,8 +40,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 configure_file(
-  "${PROJECT_SOURCE_DIR}/include/pflight_config.hpp.in"
-  "${PROJECT_BINARY_DIR}/include/pflight_config.hpp"
+  "${PROJECT_SOURCE_DIR}/include/megavoxel_config.hpp.in"
+  "${PROJECT_BINARY_DIR}/include/megavoxel_config.hpp"
   )
 
 include_directories(${PROJECT_SOURCE_DIR}/include/)
@@ -51,5 +51,5 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 
-install(FILES data/system_config DESTINATION share/pflight RENAME config)
-install(FILES data/shaders DESTINATION share/pflight)
+install(FILES data/system_config DESTINATION share/megavoxel RENAME config)
+install(FILES data/shaders DESTINATION share/megavoxel)

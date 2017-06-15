@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include "pflight_config.hpp"
+#include "megavoxel_config.hpp"
 
 #include "program.hpp"
 #include "util.hpp"
@@ -31,7 +31,7 @@ void Program::parseArgs() {
   // `invalid_prefix` are populated.
   
   bool invalid = false;
-  std::string invalid_argument;
+  std::string invalid_argument("");
   ArgumentPrefix invalid_prefix = ARGUMENT_PREFIX_NONE;
 
   // For each argument in the list...
@@ -168,6 +168,7 @@ void Program::parseShortArg(char arg) {
   }
 }
 
+// Parses a long argument
 void Program::parseLongArg(std::string arg) {
   if(arg == "help") {
     this->setFlag(ARGUMENT_FLAG_HELP);
@@ -203,6 +204,7 @@ void Program::parseArgValue(ArgumentFlag flag, std::string value) {
 
 // FLAGS
 
+// Copies arguments to internal config.
 void Program::setFlag(ArgumentFlag flag, bool value) {
 
   int offset = 1;
@@ -273,7 +275,7 @@ void Program::displayHelp(bool force) {
   log(LOG_LEVEL_INFO, "", force);
   log(LOG_LEVEL_INFO, "General options:", force);
   log(LOG_LEVEL_INFO, "    -h  --help                    Display this help", force);
-  log(LOG_LEVEL_INFO, "        --version                 Display the version of pFlight", force);
+  log(LOG_LEVEL_INFO, "        --version                 Display the version of MegaVoxel", force);
   log(LOG_LEVEL_INFO, "", force);
   log(LOG_LEVEL_INFO, "Logging options:", force);
   log(LOG_LEVEL_INFO, "        --no-colors               Do not use colors when printing to terminal", force);
@@ -294,7 +296,7 @@ void Program::displayHelp(bool force) {
 }
 
 void Program::displayVersion(bool force) {
-  log(LOG_LEVEL_INFO, "pFlight version " + std::string(PFLIGHT_VERSION), force);
+  log(LOG_LEVEL_INFO, "MegaVoxel version " + std::string(MEGAVOXEL_VERSION), force);
 }
 
 // CONFIG

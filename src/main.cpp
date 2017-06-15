@@ -1,5 +1,5 @@
 
-#include "pflight_config.hpp"
+#include "megavoxel_config.hpp"
 
 #include <iostream>
 #include <stdlib.h>

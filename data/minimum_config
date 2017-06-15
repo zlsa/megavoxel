@@ -1,0 +1,6 @@
+// Minimum config
+
+int window_width  = 640;
+int window_height = 480;
+
+int render_aa_samples = 0;

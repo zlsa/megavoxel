@@ -7,13 +7,16 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 
-#include "pflight_config.hpp"
+#include "megavoxel_config.hpp"
 
-#ifdef __linux
-#define CONFIG_SYSTEM_PATH SYSTEM_PREFIX "/share/pflight/config"
-#define CONFIG_USER_DIRECTORY boost::filesystem::path(getenv("HOME")).string() + "/.pflight/"
+#ifdef __linux__
+#define CONFIG_SYSTEM_PATH SYSTEM_PREFIX "/share/megavoxel/config"
+#define CONFIG_USER_DIRECTORY boost::filesystem::path(getenv("HOME")).string() + "/.megavoxel/"
 #define CONFIG_USER_PATH CONFIG_USER_DIRECTORY "config"
 #else
+#define CONFIG_SYSTEM_PATH SYSTEM_PREFIX "/MegaVoxel/config"
+#define CONFIG_USER_DIRECTORY boost::filesystem::path(getenv("HOME")).string() + "/MegaVoxel/"
+#define CONFIG_USER_PATH CONFIG_USER_DIRECTORY "config"
 #endif
 
 #define CONFIG_FILE_INFO(file, line) " on line " + std::to_string(line + 1) + " of '" + file + "'"

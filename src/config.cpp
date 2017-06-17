@@ -417,18 +417,27 @@ ConfigType convertStringToType(std::string type) {
   return(CONFIG_TYPE_NONE);
 }
 
+// Checks to see if the key is a valid key. (For example no spaces or
+// special characters.)
+
 bool isValidKey(std::string key) {
   std::locale locale;
+  
   if(key.size() < 1) {
     return(false);
   }
+  
   int i=0;
+  
   for(std::string::iterator it=key.begin(); it!=key.end(); ++it) {
+    
     if((!isalpha(*it, locale) || (i == 0 && isdigit(*it))) && (*it != '_')) {
       return(false);
     }
+    
     i++;
   }
+  
   return(true);
 }
 

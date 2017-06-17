@@ -13,8 +13,8 @@
 
 #define NEWLINE "\n"
 
-#define DATA_DIRECTORY SYSTEM_PREFIX "/share/pflight/"
-#define DATA_SHADER "shaders"
+#define DATA_DIRECTORY SYSTEM_PREFIX "/share/megavoxel/"
+#define DATA_DIRECTORY_SHADERS "shaders"
 
 class exit_exception: public std::exception {
 };
@@ -36,5 +36,7 @@ std::string plural(double value, std::string single = "", std::string other = "s
 std::string readFile(std::string filename);
 
 std::string readDataFile(std::string directory, std::string filename);
+
+void checkGlError();
 
 #endif

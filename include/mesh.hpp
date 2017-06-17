@@ -10,14 +10,23 @@
 #include "datablock.hpp"
 #include "material.hpp"
 
-struct Triangle {
-  int vertex[3];
+static double MESH_DATA_TRIANGLE[] = {
+  -1.0, -1.0, 0.5,
+  +0.0, +1.0, 0.5,
+  +1.0, -1.0, 0.5,
+};
+
+enum MeshState {
+  MESH_STATE_NOT_READY = 0,
+  MESH_STATE_READY = 0,
 };
 
 class Mesh: public Datablock {
  protected:
-  std::vector<glm::vec3> vertices;
-  std::vector<Triangle> triangles;
+  MeshState state;
+  
+  double *triangles;
+  int triangle_number;
 
   Material *material;
   
@@ -29,14 +38,14 @@ class Mesh: public Datablock {
   
   void deleteSelf();
 
-  void setVertices(std::vector<glm::vec3> vertices);
-  void setTriangles(std::vector<Triangle> triangles);
+  void setMeshData(double *triangles, int triangle_number);
 
   // get/set
   int getVertexNumber();
   
   void createBuffer();
 
+  void use();
   void draw(glm::mat4 matrix);
 };
 

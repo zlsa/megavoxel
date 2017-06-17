@@ -32,6 +32,8 @@ find_package(Boost 1.40
 
 # and here we go
 
+set(CMAKE_BUILD_TYPE "Release")
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-reorder")
 
@@ -52,4 +54,4 @@ include_directories(${Boost_INCLUDE_DIRS})
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
 
 install(FILES data/system_config DESTINATION share/megavoxel RENAME config)
-install(FILES data/shaders DESTINATION share/megavoxel)
+install(DIRECTORY data/shaders DESTINATION share/megavoxel)

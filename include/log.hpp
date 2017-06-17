@@ -9,6 +9,7 @@
 
 enum LogLevel {
   LOG_LEVEL_DUMP = 0,
+  LOG_LEVEL_VERBOSE,
   LOG_LEVEL_DEBUG,
   LOG_LEVEL_INFO,
   LOG_LEVEL_NOTICE,
@@ -21,6 +22,10 @@ enum LogLevel {
 
 #define LOG_USE_COLOR (1)
 
-void log(LogLevel level, std::string message, bool force = false);
+#define log_internal(message) log(LOG_LEVEL_INTERNAL, message, __FILE__, __LINE__, false)
+
+void log(LogLevel level, std::string message, std::string filename, int line, bool force);
+void log(LogLevel level, std::string message, bool force);
+void log(LogLevel level, std::string message);
 
 #endif

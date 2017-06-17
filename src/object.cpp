@@ -4,10 +4,10 @@
 #include "log.hpp"
 
 Object::Object() {
-  this->type   = OBJECT_TYPE_NONE;
+  this->type   = OBJECT_TYPE_EMPTY;
 
   this->setName("unnamed Object");
-  
+
   this->parent = NULL;
   this->matrix = glm::mat4(1.0);
   this->mesh   = NULL;
@@ -39,14 +39,14 @@ void Object::setType(ObjectType type) {
 void Object::setMesh(Mesh *mesh) {
   assert(this->type == OBJECT_TYPE_MESH);
   assert(mesh);
-  
+
   Mesh *temp = this->mesh;
-  
+
   if(mesh != NULL) {
     this->mesh = mesh;
     mesh->use();
   }
-  
+
   if(temp) temp->unuse();
 }
 
@@ -67,20 +67,20 @@ void Object::updateMatrix() {
 // parenting
 
 void Object::setParent(Object *object) {
-  
+
 #if LOG_SCENEGRAPH_CHANGES
   log(LOG_LEVEL_DUMP, "parenting '" + this->getName() + "' to '" + object->getName() + "'");
 #endif
-  
+
   Object *temp = this->parent;
   this->parent = object;
-  
+
   if(temp != NULL) temp->remove(this);
 }
 
 void Object::remove(Object *object) {
   assert(object);
-  
+
   if(this->children.find(object) == this->children.end()) {
 #if LOG_SCENEGRAPH_CHANGES
     log(LOG_LEVEL_DUMP, "removing '" + object->getName() + "' from '" + this->getName() + "'");
@@ -88,7 +88,7 @@ void Object::remove(Object *object) {
     object->unuse();
     this->children.erase(object);
   }
-  
+
 }
 
 void Object::add(Object *object) {
@@ -105,9 +105,13 @@ void Object::add(Object *object) {
 
 void Object::drawData() {
   switch(this->type) {
+   case OBJECT_TYPE_EMPTY:
+     return;
    case OBJECT_TYPE_MESH:
      this->mesh->draw(this->world_matrix);
      break;
+   default:
+     log(LOG_LEVEL_WARN, "cannot draw Object of unknown type " + std::to_string((int) this->type) + " (" + this->getName() + ")");
   }
 }
 
@@ -119,8 +123,8 @@ void Object::drawChildren() {
 
 void Object::draw() {
   this->updateMatrix();
-  
+
   this->drawData();
-  
+
   this->drawChildren();
 }

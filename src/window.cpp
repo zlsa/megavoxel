@@ -30,6 +30,10 @@ void Window::create() {
   int samples = program->getConfig()->getIntValue("render_aa_samples", 0);
   log(LOG_LEVEL_DUMP, "aa samples: " + std::to_string(samples));
   
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, WINDOW_MINIMUM_VERSION_MAJOR);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, WINDOW_MINIMUM_VERSION_MINOR);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  
   glfwWindowHint(GLFW_SAMPLES, samples);
   
   this->window = glfwCreateWindow(this->width, this->height, this->title.c_str(), NULL, NULL);
@@ -42,6 +46,7 @@ void Window::create() {
   glfwMakeContextCurrent(this->window);
 
   glewExperimental = GL_TRUE;
+  
   GLenum err = glewInit();
   if(err != GLEW_OK) {
     log(LOG_LEVEL_FATAL, "could not initialize GLEW");

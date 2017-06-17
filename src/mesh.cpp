@@ -5,69 +5,89 @@
 
 Mesh::Mesh() {
   this->setName("unnamed Mesh");
-  
-  this->vertex_array_object            = -1;
-  this->vertex_buffer_object_triangles = -1;
+
+  this->state = MESH_STATE_NOT_READY;
+
+  this->triangles = NULL;
+  this->triangle_number = 0;
+
+  this->vertex_array_object            = 0;
+  this->vertex_buffer_object_triangles = 0;
 }
 
 void Mesh::deleteSelf() {
-  if(this->vertex_array_object >= 0)
+  if(this->triangles != NULL)
+    delete this->triangles;
+    
+  if(this->state == MESH_STATE_READY) {
     glDeleteVertexArrays(1, &this->vertex_array_object);
-  
-  if(this->vertex_buffer_object_triangles >= 0)
     glDeleteBuffers(2, &this->vertex_buffer_object_triangles);
+  }
 }
 
 // get/set
 
-void Mesh::setVertices(std::vector<glm::vec3> vertices) {
-  this->vertices = vertices;
-}
-
-void Mesh::setTriangles(std::vector<Triangle> triangles) {
+void Mesh::setMeshData(double *triangles, int triangle_number) {
   this->triangles = triangles;
+  
+  this->triangle_number = triangle_number;
 }
 
 // OpenGL interface
 
 void Mesh::createBuffer() {
+  log(LOG_LEVEL_VERBOSE, "Creating OpenGL buffer");
+  
   glGenVertexArrays(1, &this->vertex_array_object);
   glBindVertexArray(this->vertex_array_object);
 
-  // triangles
+  log(LOG_LEVEL_VERBOSE, "VAO index: " + std::to_string(this->vertex_array_object));
   
+  // triangles
+
   glGenBuffers(1, &this->vertex_buffer_object_triangles);
   glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffer_object_triangles);
 
-  int size = this->triangles.size() * 3 * 3 * sizeof(GLfloat);
-  GLfloat *buf = new GLfloat[size];
-
-  Triangle *triangle;
-  glm::vec3 *vertex;
-  for(unsigned int i=0; i<this->triangles.size(); i++) {
-    triangle = &this->triangles[i];
-    for(int j=0; j<3; j++) {
-      vertex = &this->vertices[triangle->vertex[j]];
-      buf[(i * 3 * 3) + (j * 3) + 0] = vertex->x;
-      buf[(i * 3 * 3) + (j * 3) + 1] = vertex->y;
-      buf[(i * 3 * 3) + (j * 3) + 2] = vertex->z;
-    }
-  }
+  log(LOG_LEVEL_VERBOSE, "VBO index: " + std::to_string(this->vertex_buffer_object_triangles));
   
+  // Three floating-point coordinates per vertex.
+  int size = this->getVertexNumber() * 3 * sizeof(GLfloat);
+  GLfloat *buf = new GLfloat[this->getVertexNumber() * 3];
+
+  // Copy over the buffer.
+  for(unsigned int i=0; i<this->getVertexNumber() * 3; i++) {
+    buf[i] = (GLfloat) this->triangles[i];
+  }
+
   glBufferData(GL_ARRAY_BUFFER, size, buf, GL_STATIC_DRAW);
 
+  log(LOG_LEVEL_VERBOSE, "Sent mesh data (" + std::to_string(size) +  " bytes)");
+  
   delete[] buf;
+  
+  this->state = MESH_STATE_READY;
 }
 
 // get vertex number
 
 int Mesh::getVertexNumber() {
-  return(this->triangles.size() * 3);
+  return(this->triangle_number * 3);
 }
-  
+
 // draw mesh
 
+void Mesh::use() {
+  assert(this->state == MESH_STATE_READY);
+  
+  glBindVertexArray(this->vertex_array_object);
+}
+
 void Mesh::draw(glm::mat4 matrix) {
-  glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffer_object_triangles);
-  glDrawArrays(GL_LINE_LOOP, 0, this->getVertexNumber());
+  
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+  glEnableVertexAttribArray(0);
+  glBindVertexArray(this->vertex_array_object);
+  //glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffer_object_triangles);
+  
+  glDrawArrays(GL_TRIANGLES, 0, this->getVertexNumber());
 }

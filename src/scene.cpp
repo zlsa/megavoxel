@@ -10,7 +10,7 @@ Scene::Scene() {
   this->root->use();
   
   this->root->setName("root object");
-  this->clear_color = glm::vec4(0.9, 1.0, 1.0, 1.0);
+  this->clear_color = glm::vec4(0.2, 0.0, 0.0, 1.0);
 }
 
 Scene::~Scene() {
@@ -39,8 +39,8 @@ void Scene::add(Object *object) {
   this->root->add(object);
 }
 
-Shader *Scene::newShader(std::string vertex_filename, std::string fragment_filename) {
-  Shader *shader = new Shader(vertex_filename, fragment_filename);
+Shader *Scene::newShader() {
+  Shader *shader = new Shader();
   
   return shader;
 }

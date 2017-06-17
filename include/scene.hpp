@@ -26,7 +26,7 @@ class Scene {
   void draw();
   void add(Object *object);
   
-  Shader *newShader(std::string vertex_filename, std::string fragment_filename);
+  Shader *newShader();
   Material *newMaterial();
   Mesh *newMesh();
 };

@@ -12,36 +12,35 @@
 #include "datablock.hpp"
 
 enum ObjectType {
-  OBJECT_TYPE_NONE = 0,
-  OBJECT_TYPE_EMPTY,
-  OBJECT_TYPE_MESH,
-  OBJECT_TYPE_CAMERA,
+  OBJECT_TYPE_EMPTY = 0,
+  OBJECT_TYPE_MESH = 1,
+  OBJECT_TYPE_CAMERA = 2,
 };
 
 class Object: public Datablock {
  protected:
-  
+
   glm::mat4 matrix;
   glm::mat4 world_matrix;
 
   ObjectType type;
-  
+
   Mesh *mesh;
   Camera *camera;
 
   Object *parent;
   std::set<Object*> children;
-  
+
  public:
   Object();
-  
+
   void deleteSelf();
   void deleteData();
-  
+
   glm::vec3 getPosition();
-  
+
   void setType(ObjectType type);
-  
+
   void setMesh(Mesh *mesh);
 
   glm::mat4 getMatrix(bool world=false);

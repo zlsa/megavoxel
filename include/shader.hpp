@@ -22,15 +22,18 @@ class Shader: public Datablock {
 
  public:
   Shader();
-  Shader(std::string vertex_filename, std::string fragment_filename);
   void deleteSelf();
   
   void create();
 
   void createShader(std::string vertex_filename, std::string fragment_filename);
   bool createProgram();
-  bool createVertexShader(std::string contents);
-  bool createFragmentShader(std::string contents);
+  
+  bool createVertexShaderFromString(std::string contents, std::string filename);
+  bool createFragmentShaderFromString(std::string contents, std::string filename);
+  int createShaderFromString(GLenum type, std::string contents, std::string filename);
+
+  void use();
 };
 
 #endif

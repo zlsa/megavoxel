@@ -86,12 +86,14 @@ std::string readDataFile(std::string directory, std::string filename) {
 
   if(program != NULL) {
     data_directory = program->getConfig()->getStringValue("data_directory", DATA_DIRECTORY);
+    
+    log(LOG_LEVEL_DUMP, "using custom data directory " + data_directory);
   }
   
   boost::filesystem::path dir(data_directory / boost::filesystem::path(directory));
   boost::filesystem::path path(dir / boost::filesystem::path(filename));
 
-  log(LOG_LEVEL_VERBOSE, "reading data file " + path.string());
+  log(LOG_LEVEL_DUMP, "reading data file " + path.string());
   
   return readFile(path.string());
 }

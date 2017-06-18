@@ -19,6 +19,7 @@ Shader::Shader() {
 void Shader::deleteSelf() {
   log(LOG_LEVEL_DUMP, "deleting Shader");
 
+#if !MEGAVOXEL_HEADLESS
   if(this->program != 0)
     glDeleteProgram(this->program);
 
@@ -27,6 +28,7 @@ void Shader::deleteSelf() {
   
   if(this->fragment_shader != 0)
     glDeleteShader(this->fragment_shader);
+#endif
   
 }
 
@@ -56,6 +58,7 @@ void Shader::createShader(std::string vertex_filename, std::string fragment_file
 }
 
 bool Shader::createProgram() {
+#if !MEGAVOXEL_HEADLESS
   this->program = glCreateProgram();
 
   glAttachShader(this->program, this->vertex_shader);
@@ -88,6 +91,7 @@ bool Shader::createProgram() {
     
     return false;
 	}
+#endif
   
   return true;
 }
@@ -111,6 +115,7 @@ int Shader::createShaderFromString(GLenum type, std::string contents, std::strin
     return 0;
   }
 
+#if !MEGAVOXEL_HEADLESS
   GLint shader = glCreateShader(type);
 
   const char *c_str = contents.c_str();
@@ -145,9 +150,33 @@ int Shader::createShaderFromString(GLenum type, std::string contents, std::strin
   }
   
   return shader;
+#endif
+
+  return 1;
+  
 }
 
-void Shader::use() {
+GLint Shader::getUniformLocation(std::string name) {
+#if !MEGAVOXEL_HEADLESS
+  
+  GLint location = glGetUniformLocation(this->program, name.c_str());
+  
+  if(location < 0) {
+    log(LOG_LEVEL_WARN, "no such uniform '" + name + "' in shader '" + this->getName() + "'");
+  } else {
+    //log(LOG_LEVEL_WARN, "uniform named '" + name + "' is " + std::to_string(location));
+  }
+
+  return location;
+#endif
+  return 1;
+}
+
+void Shader::bind() {
   assert(this->state == SHADER_STATE_READY);
+
+#if !MEGAVOXEL_HEADLESS
   glUseProgram(this->program);
+#endif
+  
 }

@@ -6,6 +6,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "scene.hpp"
+
 #define WINDOW_DEFAULT_WIDTH (1024)
 #define WINDOW_DEFAULT_HEIGHT (768)
 
@@ -30,15 +32,17 @@ class Window {
 
   void setSize(int width, int height);
   std::string getStringSize();
-  
+
   void create();
+  
+  GLFWwindow *getWindow();
   
   void update_size();
   
   void tick();
   bool shouldClose();
 
-  void draw();
+  void drawScene(Scene *scene);
 };
 
 #endif

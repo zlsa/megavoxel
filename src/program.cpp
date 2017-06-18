@@ -20,6 +20,8 @@ Program::Program(int argc, char *argv[]) {
   this->log_level         = LOG_LEVEL_INFO;
   this->log_use_colors    = true;
 
+  this->game              = NULL;
+
   this->should_exit       = false;
 }
 
@@ -335,7 +337,12 @@ void Program::createWindow() {
   this->window->create();
 }
 
+Window *Program::getWindow() {
+  return this->window;
+}
+
 void Program::tick() {
+  this->game->tick();
   this->window->tick();
   this->should_exit = this->window->shouldClose();
 }
@@ -344,15 +351,13 @@ bool Program::shouldExit() {
   return(this->should_exit);
 }
 
-// SCENE
-
-void Program::createScene() {
-  this->scene = new Scene();
-  this->scene->create();
+void Program::createGame() {
+  this->game = new Game();
+  this->game->create();
 }
 
-Scene *Program::getScene() {
-  return(this->scene);
+Game *Program::getGame() {
+  return(this->game);
 }
 
 // DEBUG
@@ -374,8 +379,8 @@ void Program::dump() {
 // DESTRUCTOR
 
 Program::~Program() {
-  if(this->scene != NULL)
-    this->scene->~Scene();
+  if(this->game != NULL)
+    this->game->~Game();
   
   delete this->window;
   

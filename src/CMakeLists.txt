@@ -16,7 +16,8 @@ add_executable(megavoxel-client
   camera.cpp
 
   scene.cpp
-  earth.cpp
+  world.cpp
+  game.cpp
 
   program.cpp
 

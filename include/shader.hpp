@@ -33,7 +33,9 @@ class Shader: public Datablock {
   bool createFragmentShaderFromString(std::string contents, std::string filename);
   int createShaderFromString(GLenum type, std::string contents, std::string filename);
 
-  void use();
+  GLint getUniformLocation(std::string name);
+  
+  void bind();
 };
 
 #endif

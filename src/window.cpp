@@ -27,7 +27,9 @@ std::string Window::getStringSize() {
 }
 
 void Window::create() {
+#if !MEGAVOXEL_HEADLESS
   int samples = program->getConfig()->getIntValue("render_aa_samples", 0);
+  
   log(LOG_LEVEL_DUMP, "aa samples: " + std::to_string(samples));
   
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, WINDOW_MINIMUM_VERSION_MAJOR);
@@ -53,31 +55,52 @@ void Window::create() {
   }
   
   log(LOG_LEVEL_DUMP, "created " + this->getStringSize() + " window with title '" + this->title + "'");
+#else
+  log(LOG_LEVEL_WARN, "running headless; not creating window");
+#endif
+}
+
+GLFWwindow *Window::getWindow() {
+  return this->window;
 }
 
 void Window::update_size() {
+#if !MEGAVOXEL_HEADLESS
   glfwGetWindowSize(this->window, &this->width, &this->height);
+#endif
 }
 
 bool Window::shouldClose() {
-  return(this->should_close);
+  return this->should_close;
 }
 
 void Window::tick() {
+#if !MEGAVOXEL_HEADLESS
   this->should_close = glfwWindowShouldClose(this->window);
+#endif
 
   this->update_size();
 
-  this->draw();
+  if(program->getGame()) {
+    this->drawScene(program->getGame()->getScene());
+  }
 
+#if !MEGAVOXEL_HEADLESS
   glfwSwapBuffers(this->window);
   glfwPollEvents();
+#endif
 }
 
-void Window::draw() {
-  Scene *scene = program->getScene();
-
+void Window::drawScene(Scene *scene) {
+  
+#if !MEGAVOXEL_HEADLESS
+  int width, height;
+  glfwGetFramebufferSize(this->window, &width, &height);
+  glViewport(0, 0, width, height);
+#endif
+  
   scene->draw();
+  
 }
 
 // DESTRUCTOR

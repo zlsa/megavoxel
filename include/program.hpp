@@ -8,7 +8,7 @@
 
 #include "config.hpp"
 #include "window.hpp"
-#include "scene.hpp"
+#include "game.hpp"
 
 enum ArgumentParseMode {
   ARGUMENT_PARSE_MODE_ARGS,             // default mode (--help file.xml)
@@ -55,16 +55,14 @@ class Program {
 
   ArgumentFlag value_flag;
 
-  // CONFIG
   Config *config;
   
-  // WINDOW
   Window *window;
   
   bool should_exit;
 
-  // SCENE
-  Scene *scene;
+  // The main game object; can be null.
+  Game *game;
 
  public:
   int log_level;
@@ -95,12 +93,13 @@ class Program {
 
   // window
   void createWindow();
+  Window *getWindow();
   void tick();
   bool shouldExit();
 
   // scene
-  void createScene();
-  Scene *getScene();
+  void createGame();
+  Game *getGame();
   
   // debugging
   void dump();

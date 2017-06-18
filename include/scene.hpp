@@ -1,19 +1,27 @@
 
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
 
-#include "earth.hpp"
+class Scene;
+
 #include "object.hpp"
+
+#include "shader.hpp"
+
+#include "material.hpp"
+
+#include "camera.hpp"
+#include "mesh.hpp"
 
 class Scene {
  protected:
-  Earth earth;
   glm::vec4 clear_color;
   
   Object *root;
   
-  Shader *shaders;
   Material *materials;
+
+  // The active camera.
+  Object *active_camera;
 
  public:
   Scene();
@@ -29,6 +37,9 @@ class Scene {
   Shader *newShader();
   Material *newMaterial();
   Mesh *newMesh();
+  Camera *newCamera();
+
+  void setActiveCamera(Object *camera);
+  Object *getActiveCamera();
 };
 
-#endif

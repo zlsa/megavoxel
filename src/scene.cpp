@@ -8,9 +8,13 @@
 Scene::Scene() {
   this->root = new Object();
   this->root->use();
+
+  this->root->setScene(this);
   
   this->root->setName("root object");
-  this->clear_color = glm::vec4(0.2, 0.0, 0.0, 1.0);
+  this->clear_color = glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+  this->active_camera = NULL;
 }
 
 Scene::~Scene() {
@@ -23,14 +27,16 @@ glm::vec4 Scene::getClearColor() {
 }
 
 void Scene::create() {
-  this->earth.create();
+
 }
 
 void Scene::draw() {
   glm::vec4 cc = this->getClearColor();
   
+#if !MEGAVOXEL_HEADLESS
   glClearColor(cc.x, cc.y, cc.z, cc.a);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#endif
 
   this->root->draw();
 }
@@ -53,4 +59,20 @@ Material *Scene::newMaterial() {
 Mesh *Scene::newMesh() {
   Mesh *mesh = new Mesh();
   return mesh;
+}
+
+Camera *Scene::newCamera() {
+  Camera *camera = new Camera();
+  return camera;
+}
+
+void Scene::setActiveCamera(Object *camera) {
+  assert(camera->getType() == OBJECT_TYPE_CAMERA);
+  this->active_camera = camera;
+}
+
+Object *Scene::getActiveCamera() {
+  assert(this->active_camera);
+  
+  return this->active_camera;
 }

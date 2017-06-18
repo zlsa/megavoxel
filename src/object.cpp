@@ -1,6 +1,8 @@
 
 #include "object.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "log.hpp"
 
 Object::Object() {
@@ -8,10 +10,13 @@ Object::Object() {
 
   this->setName("unnamed Object");
 
-  this->parent = NULL;
+  this->position = glm::vec3(0.0, 0.0, 0.0);
   this->matrix = glm::mat4(1.0);
+  
+  this->parent = NULL;
   this->mesh   = NULL;
   this->camera = NULL;
+  this->scene  = NULL;
 }
 
 void Object::deleteSelf() {
@@ -26,6 +31,10 @@ void Object::deleteData() {
   if(this->mesh)
     this->mesh->unuse();
   // TODO add all types here
+}
+
+void Object::setPosition(glm::vec3 position) {
+  this->position = position;
 }
 
 glm::vec3 Object::getPosition() {
@@ -45,9 +54,29 @@ void Object::setMesh(Mesh *mesh) {
   if(mesh != NULL) {
     this->mesh = mesh;
     mesh->use();
+    mesh->setObject(this);
   }
 
   if(temp) temp->unuse();
+}
+
+void Object::setCamera(Camera *camera) {
+  assert(this->type == OBJECT_TYPE_CAMERA);
+  assert(camera);
+
+  Camera *temp = this->camera;
+
+  if(camera != NULL) {
+    this->camera = camera;
+    camera->use();
+    camera->setObject(this);
+  }
+
+  if(temp) temp->unuse();
+}
+
+Camera *Object::getCamera() {
+  return this->camera;
 }
 
 // matrix stuff
@@ -58,10 +87,12 @@ glm::mat4 Object::getMatrix(bool world) {
 }
 
 void Object::updateMatrix() {
+  this->matrix = glm::translate(glm::toMat4(this->orientation), this->position);
+    
   if(this->parent == NULL)
     this->world_matrix = this->matrix;
   else
-    this->world_matrix = this->parent->getMatrix() * this->matrix;
+    this->world_matrix = this->parent->getMatrix(true) * this->matrix;
 }
 
 // parenting
@@ -93,22 +124,35 @@ void Object::remove(Object *object) {
 
 void Object::add(Object *object) {
   assert(object);
+  
 #if LOG_SCENEGRAPH_CHANGES
   log(LOG_LEVEL_DUMP, "adding '" + object->getName() + "' to '" + this->getName() + "'");
 #endif
+  
   object->setParent(this);
+  object->setScene(this->scene);
+  
   this->children.insert(object);
   object->use();
+}
+
+void Object::setScene(Scene *scene) {
+  this->scene = scene;
 }
 
 // draw
 
 void Object::drawData() {
+  glm::mat4 *projection_matrix = this->scene->getActiveCamera()->getCamera()->getProjectionMatrix();
+  
   switch(this->type) {
    case OBJECT_TYPE_EMPTY:
      return;
    case OBJECT_TYPE_MESH:
-     this->mesh->draw(this->world_matrix);
+     this->mesh->draw(&this->world_matrix, projection_matrix);
+     break;
+   case OBJECT_TYPE_CAMERA:
+     this->camera->updateMatrix();
      break;
    default:
      log(LOG_LEVEL_WARN, "cannot draw Object of unknown type " + std::to_string((int) this->type) + " (" + this->getName() + ")");

@@ -1,19 +1,24 @@
 
-#ifndef MESH_H
-#define MESH_H
+#pragma once
+
+class Mesh;
 
 #include <vector>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "scene.hpp"
+
 #include "datablock.hpp"
+#include "object.hpp"
 #include "material.hpp"
 
 static double MESH_DATA_TRIANGLE[] = {
-  -1.0, -1.0, 0.5,
-  +0.0, +1.0, 0.5,
-  +1.0, -1.0, 0.5,
+  -1.0, -1.0, 0,
+  +0.0, +1.0, 0,
+  +1.0, -1.0, 0,
 };
 
 enum MeshState {
@@ -23,6 +28,8 @@ enum MeshState {
 
 class Mesh: public Datablock {
  protected:
+  Object *object;
+  
   MeshState state;
   
   double *triangles;
@@ -38,6 +45,9 @@ class Mesh: public Datablock {
   
   void deleteSelf();
 
+  void setObject(Object *object);
+  
+  void setMaterial(Material *material);
   void setMeshData(double *triangles, int triangle_number);
 
   // get/set
@@ -45,8 +55,7 @@ class Mesh: public Datablock {
   
   void createBuffer();
 
-  void use();
-  void draw(glm::mat4 matrix);
+  void bind();
+  void draw(const glm::mat4 *matrix, const glm::mat4 *camera_matrix);
 };
 
-#endif

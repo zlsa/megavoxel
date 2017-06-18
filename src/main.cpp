@@ -20,7 +20,7 @@ void run(int argc, char *argv[]) {
   program->displayVersion();
   
   program->createWindow();
-  program->createScene();
+  program->createGame();
   
   program->dump();
 

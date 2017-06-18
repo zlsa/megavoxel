@@ -1,15 +1,18 @@
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
+
+class Object;
 
 #include <set>
 #include <string>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/glm.hpp>
 
+#include "datablock.hpp"
+
 #include "mesh.hpp"
 #include "camera.hpp"
-#include "datablock.hpp"
 
 enum ObjectType {
   OBJECT_TYPE_EMPTY = 0,
@@ -20,14 +23,21 @@ enum ObjectType {
 class Object: public Datablock {
  protected:
 
+  glm::vec3 position;
+  glm::quat orientation;
+
   glm::mat4 matrix;
   glm::mat4 world_matrix;
 
   ObjectType type;
 
-  Mesh *mesh;
-  Camera *camera;
+  union {
+    Mesh *mesh;
+    Camera *camera;
+  };
 
+  Scene *scene;
+  
   Object *parent;
   std::set<Object*> children;
 
@@ -37,11 +47,15 @@ class Object: public Datablock {
   void deleteSelf();
   void deleteData();
 
+  void setPosition(glm::vec3 pos);
   glm::vec3 getPosition();
 
   void setType(ObjectType type);
 
   void setMesh(Mesh *mesh);
+  void setCamera(Camera *camera);
+
+  Camera *getCamera();
 
   glm::mat4 getMatrix(bool world=false);
   void updateMatrix();
@@ -49,10 +63,11 @@ class Object: public Datablock {
   void setParent(Object *object);
   void remove(Object *object);
   void add(Object *object);
+  
+  void setScene(Scene *scene);
 
   void drawData();
   void drawChildren();
   void draw();
 };
 
-#endif

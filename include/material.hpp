@@ -14,6 +14,9 @@ class Material: public Datablock {
   Material();
 
   void setShader(Shader *shader);
+  Shader *getShader();
+
+  void bind();
 };
 
 #endif

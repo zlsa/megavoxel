@@ -14,3 +14,11 @@ void Material::setShader(Shader *shader) {
   
   this->shader = shader;
 }
+
+Shader *Material::getShader() {
+  return this->shader;
+}
+
+void Material::bind() {
+  this->shader->bind();
+}

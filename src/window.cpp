@@ -53,6 +53,12 @@ void Window::create() {
   if(err != GLEW_OK) {
     log(LOG_LEVEL_FATAL, "could not initialize GLEW");
   }
+
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  
+  // Enable depth test.
+  glEnable(GL_DEPTH_TEST);
   
   log(LOG_LEVEL_DUMP, "created " + this->getStringSize() + " window with title '" + this->title + "'");
 #else

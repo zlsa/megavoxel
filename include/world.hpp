@@ -20,7 +20,7 @@ class WorldTile {
 
 class World {
  protected:
-  std::array<WorldTile*, 6> tiles;
+  std::array<WorldTile*, 10000> tiles;
 
  public:
   Mesh *mesh;

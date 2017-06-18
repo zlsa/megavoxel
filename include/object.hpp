@@ -50,6 +50,10 @@ class Object: public Datablock {
   void setPosition(glm::vec3 pos);
   glm::vec3 getPosition();
 
+  void setOrientation(glm::vec3 rot);
+  void setOrientation(glm::quat rot);
+  glm::quat getOrientation();
+
   void setType(ObjectType type);
 
   void setMesh(Mesh *mesh);

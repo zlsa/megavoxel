@@ -15,6 +15,9 @@ class Camera: public Datablock {
   Object *object;
   
   double fov;
+  
+  double near;
+  double far;
 
   glm::mat4 projection_matrix;
   
@@ -22,6 +25,8 @@ class Camera: public Datablock {
   Camera();
 
   void setObject(Object *object);
+  void setFov(double fov);
+  void setLimits(double near, double far);
   
   void updateMatrix();
 

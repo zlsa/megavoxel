@@ -21,6 +21,15 @@ static double MESH_DATA_TRIANGLE[] = {
   +1.0, -1.0, 0,
 };
 
+static double MESH_DATA_SQUARE[] = {
+  -1.0, -1.0, 0,
+  -1.0, +1.0, 0,
+  +1.0, +1.0, 0,
+  -1.0, -1.0, 0,
+  +1.0, -1.0, 0,
+  +1.0, +1.0, 0,
+};
+
 enum MeshState {
   MESH_STATE_NOT_READY = 0,
   MESH_STATE_READY = 0,

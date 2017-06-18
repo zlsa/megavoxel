@@ -42,7 +42,7 @@ void World::create(Scene *scene) {
 
   this->mesh->setMaterial(this->material);
   
-  this->mesh->setMeshData(MESH_DATA_TRIANGLE, 1);
+  this->mesh->setMeshData(MESH_DATA_SQUARE, 2);
   
   this->mesh->createBuffer();
   

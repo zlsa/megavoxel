@@ -16,6 +16,8 @@ Game::Game() {
   this->camera = new Object();
   this->camera->setType(OBJECT_TYPE_CAMERA);
   this->camera->setCamera(this->scene->newCamera());
+  
+  this->camera->getCamera()->setFov(20);
 
   this->scene->setActiveCamera(this->camera);
 
@@ -46,8 +48,6 @@ void Game::tick() {
   
   double seconds = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() / 1000.0;
 
-  //this->world->group->setPosition(glm::vec3(sin(seconds * 0.5) * 30, cos(seconds * 0.2) * 30, cos(seconds * 0.8) * 30));
-
-  //log(LOG_LEVEL_VERBOSE, glm::to_string(this->world->group->getPosition()));
+  this->world->group->setOrientation(glm::vec3(fmod(seconds, 360), 0, fmod(seconds, 360)));
 }
 

@@ -38,7 +38,19 @@ void Object::setPosition(glm::vec3 position) {
 }
 
 glm::vec3 Object::getPosition() {
-  return(glm::vec3(this->matrix[3]));
+  return this->position;
+}
+
+void Object::setOrientation(glm::vec3 orientation) {
+  this->orientation = glm::quat(orientation);
+}
+
+void Object::setOrientation(glm::quat orientation) {
+  this->orientation = orientation;
+}
+
+glm::quat Object::getOrientation() {
+  return this->orientation;
 }
 
 void Object::setType(ObjectType type) {

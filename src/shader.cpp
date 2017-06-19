@@ -166,7 +166,23 @@ GLint Shader::getUniformLocation(std::string name) {
   GLint location = glGetUniformLocation(this->program, name.c_str());
   
   if(location < 0) {
-    log(LOG_LEVEL_WARN, "no such uniform '" + name + "' in shader '" + this->getName() + "'");
+    //log(LOG_LEVEL_WARN, "no such uniform '" + name + "' in shader '" + this->getName() + "'");
+  } else {
+    //log(LOG_LEVEL_WARN, "uniform named '" + name + "' is " + std::to_string(location));
+  }
+
+  return location;
+#endif
+  return 1;
+}
+
+GLint Shader::getAttributeLocation(std::string name) {
+#if !MEGAVOXEL_HEADLESS
+  
+  GLint location = glGetAttribLocation(this->program, name.c_str());
+  
+  if(location < 0) {
+    //log(LOG_LEVEL_WARN, "no such attribute '" + name + "' in shader '" + this->getName() + "'");
   } else {
     //log(LOG_LEVEL_WARN, "uniform named '" + name + "' is " + std::to_string(location));
   }

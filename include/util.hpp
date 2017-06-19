@@ -39,4 +39,6 @@ std::string readDataFile(std::string directory, std::string filename);
 
 void checkGlError();
 
+double getTimeSinceEpoch();
+
 #endif

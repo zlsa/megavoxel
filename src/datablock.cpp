@@ -55,10 +55,7 @@ void Datablock::unuse() {
     datablock_number -= 1;
     datablocks.erase(this);
     
-    log(LOG_LEVEL_DUMP, "deleting '" + this->getName() + "'");
     delete this;
-
-    //this->deleteSelf();
   }
   
 }
@@ -67,9 +64,7 @@ bool Datablock::isReady() {
   return this->ready;
 }
 
-// name
 void Datablock::setName(std::string name) {
-  log(LOG_LEVEL_VERBOSE, "renaming '" + this->getName() + "' to '" + name + "'");
   this->name = name;
 }
 

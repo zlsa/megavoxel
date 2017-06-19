@@ -136,6 +136,7 @@ void Object::updateMatrix() {
   this->matrix = glm::toMat4(this->orientation);
   this->matrix = glm::scale(this->matrix, this->scale);
   this->matrix = glm::translate(this->matrix, this->position);
+  
   //this->matrix = glm::translate(glm::scale(glm::toMat4(this->orientation), this->scale), this->position);
     
   if(this->parent == NULL)

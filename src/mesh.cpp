@@ -4,11 +4,14 @@
 #include "log.hpp"
 #include "megavoxel_config.hpp"
 
+#include "util.hpp"
+
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4, glm::ivec4
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
+#include <glm/gtc/matrix_inverse.hpp>
 
 Mesh::Mesh() {
 #if LOG_SCENEGRAPH_CHANGES
@@ -61,19 +64,26 @@ void Mesh::setMaterial(Material *material) {
 };
 
 void Mesh::setMeshData(double *triangles, int triangle_number) {
-  this->triangles = new double[triangle_number * 3 * 3];
 
-  for(int i=0; i<triangle_number * 3 * 3; i++) {
+  this->triangle_number = triangle_number;
+  
+  this->triangles = new double[this->getArraySize()];
+
+  for(unsigned int i=0; i<this->getArraySize(); i++) {
     this->triangles[i] = triangles[i];
   }
   
-  this->triangle_number = triangle_number;
 }
 
 // get vertex number
 
 int Mesh::getVertexNumber() {
-  return(this->triangle_number * 3);
+  return this->triangle_number * 3;
+}
+
+int Mesh::getArraySize() {
+  // Position, normal, and UV coordinates.
+  return this->getVertexNumber() * 8;
 }
 
 // OpenGL interface
@@ -85,23 +95,37 @@ void Mesh::createBuffer() {
   glGenVertexArrays(1, &this->vertex_array_object);
   glBindVertexArray(this->vertex_array_object);
 
-  // triangles
+  // To store the position of each vertex.
 
   glGenBuffers(1, &this->vertex_buffer_object_triangles);
   glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffer_object_triangles);
 
-  // Three floating-point coordinates per vertex.
-  int size = this->getVertexNumber() * 3 * sizeof(GLfloat);
-  GLfloat *buf = new GLfloat[this->getVertexNumber() * 3];
+  // Size of the buffer, in bytes.
+  int buf_size = this->getArraySize() * sizeof(GLfloat);
+  GLfloat *buf = new GLfloat[this->getArraySize()];
 
   // Copy over the buffer.
-  for(unsigned int i=0; i<this->getVertexNumber() * 3; i++) {
+  for(unsigned int i=0; i<this->getArraySize(); i++) {
     buf[i] = (GLfloat) this->triangles[i];
   }
 
-  glBufferData(GL_ARRAY_BUFFER, size, buf, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, buf_size, buf, GL_STATIC_DRAW);
 
-  log(LOG_LEVEL_DUMP, "Sent " + std::to_string(size) +  " bytes of mesh data");
+  Shader *shader = this->material->getShader();
+
+  int a_position = shader->getAttributeLocation("a_position");
+  int a_normal = shader->getAttributeLocation("a_normal");
+  int a_uv = shader->getAttributeLocation("a_uv");
+  
+  glVertexAttribPointer(a_position, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, BUFFER_OFFSET(0, GLfloat));
+  glVertexAttribPointer(a_normal, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, BUFFER_OFFSET(3, GLfloat));
+  glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, BUFFER_OFFSET(5, GLfloat));
+  
+  glEnableVertexAttribArray(a_position);
+  glEnableVertexAttribArray(a_normal);
+  glEnableVertexAttribArray(a_uv);
+  
+  log(LOG_LEVEL_DUMP, "Sent " + std::to_string(buf_size) +  " bytes of mesh data");
   
   delete[] buf;
 #endif
@@ -128,15 +152,20 @@ void Mesh::draw(const glm::mat4 *matrix, const glm::mat4 *camera_matrix) {
   Shader *shader = this->material->getShader();
   
 #if !MEGAVOXEL_HEADLESS
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-  glEnableVertexAttribArray(0);
-  glBindVertexArray(this->vertex_array_object);
-  //glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffer_object_triangles);
+  this->bind();
 
-  glUniformMatrix4fv(shader->getUniformLocation("u_mvp_matrix"), 1, GL_FALSE, (const GLfloat *)
-                     (glm::value_ptr((*camera_matrix) * (*matrix))));
+  glUniformMatrix4fv(shader->getUniformLocation("u_model_matrix"), 1, GL_FALSE,
+                     (const GLfloat *) (glm::value_ptr(*matrix)));
 
-  glPointSize(10);
+  //glUniform3f(shader->getUniformLocation("u_light_position"), -10.0, 0.0, sin(getTimeSinceEpoch() * 2.0) * 10.0);
+  glUniform3f(shader->getUniformLocation("u_light_direction"), -10.0, -5.0, -15.0);
+
+  glUniformMatrix3fv(shader->getUniformLocation("u_normal_matrix"), 1, GL_FALSE,
+                     (const GLfloat *) (glm::value_ptr(glm::inverseTranspose(glm::mat3(*matrix)))));
+
+  glUniformMatrix4fv(shader->getUniformLocation("u_view_matrix"), 1, GL_FALSE,
+                     (const GLfloat *) (glm::value_ptr((*camera_matrix) * (*matrix))));
+
   glDrawArrays(GL_TRIANGLES, 0, this->getVertexNumber());
 #endif
   

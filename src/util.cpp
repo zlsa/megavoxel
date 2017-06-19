@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <cctype>
 
+#include <chrono>
+
 #include <GL/glew.h>
 #include "log.hpp"
 
@@ -120,4 +122,10 @@ void checkGlError() {
      log(LOG_LEVEL_FATAL, "OpenGL reports out of memory");
      return;
   }
+}
+
+double getTimeSinceEpoch() {
+  using namespace std::chrono;
+  
+  return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() / 1000.0;
 }

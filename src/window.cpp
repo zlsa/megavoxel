@@ -59,6 +59,12 @@ void Window::create() {
   
   // Enable depth test.
   glEnable(GL_DEPTH_TEST);
+
+  // Disable vsync.
+  glfwSwapInterval(0);
+
+  //glEnable(GL_BLEND);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
   log(LOG_LEVEL_DUMP, "created " + this->getStringSize() + " window with title '" + this->title + "'");
 #else

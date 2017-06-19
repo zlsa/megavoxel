@@ -385,7 +385,8 @@ Program::~Program() {
   delete this->window;
   
   delete this->config;
-  
+
+  log(LOG_LEVEL_DUMP, "terminating GLFW");
   glfwTerminate();
   log(LOG_LEVEL_DUMP, "deleting Program");
 }

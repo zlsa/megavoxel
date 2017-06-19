@@ -11,6 +11,10 @@
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 
 Mesh::Mesh() {
+#if LOG_SCENEGRAPH_CHANGES
+  log(LOG_LEVEL_DUMP, "creating Mesh");
+#endif
+  
   this->setName("unnamed Mesh");
 
   this->state = MESH_STATE_NOT_READY;
@@ -18,13 +22,19 @@ Mesh::Mesh() {
   this->triangles = NULL;
   this->triangle_number = 0;
 
+  this->material = NULL;
+
   this->vertex_array_object            = 0;
   this->vertex_buffer_object_triangles = 0;
 }
 
-void Mesh::deleteSelf() {
+Mesh::~Mesh() {
+  
   if(this->triangles != NULL)
     delete this->triangles;
+
+  if(this->material)
+    this->material->unuse();
     
 #if !MEGAVOXEL_HEADLESS
   if(this->state == MESH_STATE_READY) {
@@ -42,11 +52,20 @@ void Mesh::setObject(Object *object) {
 // get/set
 
 void Mesh::setMaterial(Material *material) {
+  if(this->material != NULL) {
+    this->material->unuse();
+  }
+
   this->material = material;
+  material->use();
 };
 
 void Mesh::setMeshData(double *triangles, int triangle_number) {
-  this->triangles = triangles;
+  this->triangles = new double[triangle_number * 3 * 3];
+
+  for(int i=0; i<triangle_number * 3 * 3; i++) {
+    this->triangles[i] = triangles[i];
+  }
   
   this->triangle_number = triangle_number;
 }
@@ -117,7 +136,10 @@ void Mesh::draw(const glm::mat4 *matrix, const glm::mat4 *camera_matrix) {
   glUniformMatrix4fv(shader->getUniformLocation("u_mvp_matrix"), 1, GL_FALSE, (const GLfloat *)
                      (glm::value_ptr((*camera_matrix) * (*matrix))));
 
+  glPointSize(10);
   glDrawArrays(GL_TRIANGLES, 0, this->getVertexNumber());
 #endif
+  
+  this->object->getScene()->draw_calls += 1;
   
 }

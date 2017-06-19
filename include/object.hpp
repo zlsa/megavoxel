@@ -24,6 +24,7 @@ class Object: public Datablock {
  protected:
 
   glm::vec3 position;
+  glm::vec3 scale;
   glm::quat orientation;
 
   glm::mat4 matrix;
@@ -34,7 +35,7 @@ class Object: public Datablock {
   union {
     Mesh *mesh;
     Camera *camera;
-  };
+  } data;
 
   Scene *scene;
   
@@ -42,16 +43,25 @@ class Object: public Datablock {
   std::set<Object*> children;
 
  public:
+  bool visible;
+  bool visible_self;
+  bool visible_children;
+  
   Object();
+  ~Object();
 
-  void deleteSelf();
+  //void deleteSelf();
   void deleteData();
 
-  void setPosition(glm::vec3 pos);
+  void setPosition(glm::vec3 position);
   glm::vec3 getPosition();
 
-  void setOrientation(glm::vec3 rot);
-  void setOrientation(glm::quat rot);
+  void setScale(glm::vec3 scale);
+  void setScale(double scale);
+  glm::vec3 getScale();
+
+  void setOrientation(glm::vec3 orientation);
+  void setOrientation(glm::quat orientation);
   glm::quat getOrientation();
 
   void setType(ObjectType type);
@@ -69,6 +79,7 @@ class Object: public Datablock {
   void add(Object *object);
   
   void setScene(Scene *scene);
+  Scene *getScene();
 
   void drawData();
   void drawChildren();

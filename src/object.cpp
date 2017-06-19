@@ -6,30 +6,58 @@
 #include "log.hpp"
 
 Object::Object() {
+#if LOG_SCENEGRAPH_CHANGES
+  log(LOG_LEVEL_DUMP, "creating Object");
+#endif
+  
   this->type   = OBJECT_TYPE_EMPTY;
 
   this->setName("unnamed Object");
 
   this->position = glm::vec3(0.0, 0.0, 0.0);
+  this->scale = glm::vec3(1.0, 1.0, 1.0);
   this->matrix = glm::mat4(1.0);
   
   this->parent = NULL;
-  this->mesh   = NULL;
-  this->camera = NULL;
+  this->data.mesh   = NULL;
+  this->data.camera = NULL;
   this->scene  = NULL;
+
+  this->visible = true;
+  this->visible_self = true;
+  this->visible_children = true;
 }
 
-void Object::deleteSelf() {
+Object::~Object() {
+  
+  //log(LOG_LEVEL_DUMP, "deleting Object '" + this->getName() + "'");
+
+  // `parent` should *never* be non-null when this is called.
+  assert(this->parent == NULL);
+
   for(Object *object : this->children) {
-    this->remove(object);
+    object->unuse();
+    
+    //this->children.erase(object);
+    
+    //this->remove(object);
   }
+
+  if(this->parent != NULL) {
+    //this->parent->unuse();
+  }
+  
   this->deleteData();
-  log(LOG_LEVEL_DUMP, "deleting Object '" + this->getName() + "'");
 }
 
 void Object::deleteData() {
-  if(this->mesh)
-    this->mesh->unuse();
+  
+  if(this->type == OBJECT_TYPE_MESH && this->data.mesh != NULL)
+    this->data.mesh->unuse();
+  
+  if(this->type == OBJECT_TYPE_CAMERA && this->data.camera != NULL)
+    this->data.camera->unuse();
+  
   // TODO add all types here
 }
 
@@ -39,6 +67,18 @@ void Object::setPosition(glm::vec3 position) {
 
 glm::vec3 Object::getPosition() {
   return this->position;
+}
+
+void Object::setScale(glm::vec3 scale) {
+  this->scale = scale;
+}
+
+void Object::setScale(double scale) {
+  this->scale = glm::vec3((float) scale, (float) scale, (float) scale);
+}
+
+glm::vec3 Object::getScale() {
+  return this->scale;
 }
 
 void Object::setOrientation(glm::vec3 orientation) {
@@ -61,34 +101,28 @@ void Object::setMesh(Mesh *mesh) {
   assert(this->type == OBJECT_TYPE_MESH);
   assert(mesh);
 
-  Mesh *temp = this->mesh;
+  /*if(this->data.mesh != NULL)
+    this->data.mesh->unuse();*/
 
-  if(mesh != NULL) {
-    this->mesh = mesh;
-    mesh->use();
-    mesh->setObject(this);
-  }
-
-  if(temp) temp->unuse();
+  this->data.mesh = mesh;
+  this->data.mesh->use();
+  this->data.mesh->setObject(this);
 }
 
 void Object::setCamera(Camera *camera) {
   assert(this->type == OBJECT_TYPE_CAMERA);
   assert(camera);
 
-  Camera *temp = this->camera;
-
-  if(camera != NULL) {
-    this->camera = camera;
-    camera->use();
-    camera->setObject(this);
-  }
-
-  if(temp) temp->unuse();
+  if(this->data.camera != NULL)
+    this->data.camera->unuse();
+  
+  this->data.camera = camera;
+  this->data.camera->use();
+  this->data.camera->setObject(this);
 }
 
 Camera *Object::getCamera() {
-  return this->camera;
+  return this->data.camera;
 }
 
 // matrix stuff
@@ -99,7 +133,10 @@ glm::mat4 Object::getMatrix(bool world) {
 }
 
 void Object::updateMatrix() {
-  this->matrix = glm::translate(glm::toMat4(this->orientation), this->position);
+  this->matrix = glm::toMat4(this->orientation);
+  this->matrix = glm::scale(this->matrix, this->scale);
+  this->matrix = glm::translate(this->matrix, this->position);
+  //this->matrix = glm::translate(glm::scale(glm::toMat4(this->orientation), this->scale), this->position);
     
   if(this->parent == NULL)
     this->world_matrix = this->matrix;
@@ -115,19 +152,28 @@ void Object::setParent(Object *object) {
   log(LOG_LEVEL_DUMP, "parenting '" + this->getName() + "' to '" + object->getName() + "'");
 #endif
 
-  Object *temp = this->parent;
+  Object *former_parent = this->parent;
+
   this->parent = object;
 
-  if(temp != NULL) temp->remove(this);
+  //if(this->parent != NULL)
+    //this->parent->use();
+  
+  //if(former_parent != NULL)
+  //former_parent->unuse();
+
 }
 
 void Object::remove(Object *object) {
   assert(object);
 
-  if(this->children.find(object) == this->children.end()) {
+  if(this->children.find(object) != this->children.end()) {
+    
 #if LOG_SCENEGRAPH_CHANGES
-    log(LOG_LEVEL_DUMP, "removing '" + object->getName() + "' from '" + this->getName() + "'");
+    log(LOG_LEVEL_DUMP, "removing child '" + object->getName() + "' from '" + this->getName() + "'");
 #endif
+
+    object->setParent(NULL);
     object->unuse();
     this->children.erase(object);
   }
@@ -140,16 +186,20 @@ void Object::add(Object *object) {
 #if LOG_SCENEGRAPH_CHANGES
   log(LOG_LEVEL_DUMP, "adding '" + object->getName() + "' to '" + this->getName() + "'");
 #endif
-  
+
   object->setParent(this);
   object->setScene(this->scene);
+  object->use();
   
   this->children.insert(object);
-  object->use();
 }
 
 void Object::setScene(Scene *scene) {
   this->scene = scene;
+}
+
+Scene *Object::getScene() {
+  return this->scene;
 }
 
 // draw
@@ -161,10 +211,10 @@ void Object::drawData() {
    case OBJECT_TYPE_EMPTY:
      return;
    case OBJECT_TYPE_MESH:
-     this->mesh->draw(&this->world_matrix, projection_matrix);
+     this->data.mesh->draw(&this->world_matrix, projection_matrix);
      break;
    case OBJECT_TYPE_CAMERA:
-     this->camera->updateMatrix();
+     this->data.camera->updateMatrix();
      break;
    default:
      log(LOG_LEVEL_WARN, "cannot draw Object of unknown type " + std::to_string((int) this->type) + " (" + this->getName() + ")");
@@ -178,9 +228,15 @@ void Object::drawChildren() {
 }
 
 void Object::draw() {
+  if(this->visible == false) {
+    return;
+  }
+  
   this->updateMatrix();
 
-  this->drawData();
+  if(this->visible_self)
+    this->drawData();
 
-  this->drawChildren();
+  if(this->visible_children)
+    this->drawChildren();
 }

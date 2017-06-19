@@ -17,6 +17,7 @@ add_executable(megavoxel-client
 
   scene.cpp
   world.cpp
+  map.cpp
   game.cpp
 
   program.cpp

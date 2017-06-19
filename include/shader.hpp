@@ -22,7 +22,9 @@ class Shader: public Datablock {
 
  public:
   Shader();
-  void deleteSelf();
+  ~Shader();
+  
+  //void deleteSelf();
   
   void create();
 

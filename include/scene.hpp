@@ -23,7 +23,16 @@ class Scene {
   // The active camera.
   Object *active_camera;
 
+  long frames_rendered;
+  
+  long fps_bucket_frames;
+  double fps_bucket_time;
+
+  double fps;
+
  public:
+  long draw_calls;
+  
   Scene();
   ~Scene();
 
@@ -33,11 +42,8 @@ class Scene {
 
   void draw();
   void add(Object *object);
-  
-  Shader *newShader();
-  Material *newMaterial();
-  Mesh *newMesh();
-  Camera *newCamera();
+
+  void updateFramerate();
 
   void setActiveCamera(Object *camera);
   Object *getActiveCamera();

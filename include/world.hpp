@@ -1,35 +1,23 @@
 
-#ifndef WORLD_H
-#define WORLD_H
+#pragma once
 
 #include <array>
 #include "object.hpp"
 
 #include "scene.hpp"
+#include "map.hpp"
 
 class World;
 
-class WorldTile {
- protected:
-  World *world;
-  Object *object;
-  
- public:
-  WorldTile(World *world, int number);
-};
-
 class World {
  protected:
-  std::array<WorldTile*, 10000> tiles;
+  Map *map;
 
  public:
-  Mesh *mesh;
-  Object *group;
-  Material *material;
+  Object *root;
   
   World();
+  ~World();
   
   void create(Scene *scene);
 };
-
-#endif

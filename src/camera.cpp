@@ -12,6 +12,12 @@
 extern Program *program;
 
 Camera::Camera() {
+#if LOG_SCENEGRAPH_CHANGES
+  log(LOG_LEVEL_DUMP, "creating Camera");
+#endif
+  
+  this->setName("unnamed Camera (data)");
+  
   this->fov = 80;
 
   this->near = 0.05;

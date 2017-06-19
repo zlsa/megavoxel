@@ -1,6 +1,5 @@
 
-#ifndef DATABLOCK_H
-#define DATABLOCK_H
+#pragma once
 
 #include <string>
 
@@ -11,12 +10,12 @@ class Datablock {
 
  protected:
   std::string name;
+  bool untouchable = false;
 
  public:
   Datablock();
+  virtual ~Datablock();
 
-  void deleteSelf();
-  
   void use();
   void unuse();
 
@@ -25,6 +24,7 @@ class Datablock {
   void setName(std::string name);
   std::string getName();
     
+  size_t operator() (const Datablock &datablock) const;
+  
 };
 
-#endif

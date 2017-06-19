@@ -23,6 +23,7 @@ class Camera: public Datablock {
   
  public:
   Camera();
+  //~Camera();
 
   void setObject(Object *object);
   void setFov(double fov);

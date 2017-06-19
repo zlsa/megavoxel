@@ -12,7 +12,10 @@ class Material: public Datablock {
   
  public:
   Material();
-
+  ~Material();
+  
+  //void deleteSelf();
+  
   void setShader(Shader *shader);
   Shader *getShader();
 

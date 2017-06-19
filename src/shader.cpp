@@ -11,13 +11,16 @@
 #include "log.hpp"
 
 Shader::Shader() {
+#if LOG_SCENEGRAPH_CHANGES
+  log(LOG_LEVEL_DUMP, "creating Shader");
+#endif
+  
   this->create();
 
   this->state = SHADER_STATE_NOT_READY;
 }
 
-void Shader::deleteSelf() {
-  log(LOG_LEVEL_DUMP, "deleting Shader");
+Shader::~Shader() {
 
 #if !MEGAVOXEL_HEADLESS
   if(this->program != 0)
@@ -30,6 +33,7 @@ void Shader::deleteSelf() {
     glDeleteShader(this->fragment_shader);
 #endif
   
+  log(LOG_LEVEL_DUMP, "deleting Shader '" + this->getName() + "'");
 }
 
 void Shader::create() {

@@ -6,7 +6,7 @@ C++ file? Well, here's your chance!
 
 # Dependencies
 
-* `C++11` compiler. Works with `g++`.
+* `C++11` compiler. Tested with `gcc` and `clang`.
 * Boost
 * `GLFW3`
 * `GLEW`

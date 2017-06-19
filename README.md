@@ -1,5 +1,5 @@
 
-# pFlight Flight Simulator... or something
+# megavoxel: WIP voxel renderer
 
 Ever wanted to fly through CMakeLists.txt? Possibly a poorly written
 C++ file? Well, here's your chance!
@@ -16,7 +16,7 @@ C++ file? Well, here's your chance!
 
 ## Code
 
-Copyright (c) 2015 Jon Ross.
+Copyright (c) 2017 Jon Ross.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
